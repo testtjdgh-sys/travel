@@ -103,6 +103,9 @@ const hero = {
   image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1400&q=85",
 };
 
+let visibleSchedule = [];
+let activeDayIndex = 0;
+
 function mapsSearchUrl(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
@@ -112,34 +115,44 @@ const scheduleData = [
     day: 1, date: "9/25", week: "금", type: "la", city: "LA", title: "LA 도착 · 산타모니카 적응",
     desc: "첫날은 시차 적응. 해변 산책과 가벼운 저녁만.",
     img: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1000&q=85",
+    area: "LA 서쪽 해안 · 산타모니카",
+    stayTime: "LA 임시 숙소 기준 30-50분",
     tip: "첫날은 컨디션 관리가 핵심. 야간 장거리 운전은 비추천.",
-    schedule: [["도착 후", "LAX → 체크인", "짐 정리 후 휴식"], ["저녁", "Santa Monica Pier", "가벼운 산책과 식사"], ["밤", "시차 적응", "일찍 쉬기"]],
+    schedule: [["도착 후", "LAX → 체크인", "입국, 렌터카/이동, 짐 정리"], ["저녁", "Santa Monica Pier", "해변 산책, 가벼운 식사, 노을 보기"], ["밤", "시차 적응", "근처 마트 들른 뒤 일찍 쉬기"]],
   },
   {
     day: 2, date: "9/26", week: "토", type: "la", city: "LA", title: "할리우드 · 베벌리힐즈 · 그리피스",
     desc: "LA 대표 관광 압축. 저녁은 그리피스 야경.",
     img: "https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=1000&q=85",
+    area: "LA 북부/중부 · Hollywood-Beverly-Griffith",
+    stayTime: "LA 임시 숙소 기준 각 구간 20-45분",
     tip: "주말 그리피스는 혼잡하므로 일몰 1시간 전 도착 추천.",
-    schedule: [["오전", "Hollywood Walk of Fame", "사진 위주로 짧게"], ["오후", "Beverly Hills / Rodeo Drive", "거리 구경"], ["저녁", "Griffith Observatory", "야경"]],
+    schedule: [["오전", "Hollywood Walk of Fame", "사진 포인트 위주로 짧게"], ["점심", "Beverly Hills", "이동 중 식사 후보 확인"], ["오후", "Rodeo Drive", "거리 구경, 카페 쉬는 시간"], ["저녁", "Griffith Observatory", "일몰 전 도착, 야경 보고 복귀"]],
   },
   {
     day: 3, date: "9/27", week: "일", type: "la", city: "LA", title: "Universal Studios Hollywood",
     desc: "미국식 체험형 관광 핵심. 하루 통째로 배정.",
     img: "https://images.unsplash.com/photo-1569135219920-00898b584df4?auto=format&fit=crop&w=1000&q=85",
+    area: "LA 북쪽 · Universal City",
+    stayTime: "LA 임시 숙소 기준 25-55분",
     tip: "운영시간은 날짜별로 다르므로 공식 캘린더 확인 후 티켓 예약.",
-    schedule: [["오전", "오픈런", "인기 어트랙션 우선"], ["오후", "스튜디오 투어 / 해리포터 존", "대기시간 보며 이동"], ["저녁", "CityWalk", "식사 후 복귀"]],
+    schedule: [["오전", "오픈런", "입장 직후 인기 어트랙션 우선"], ["점심", "파크 내부 식사", "대기시간 보며 가까운 곳 선택"], ["오후", "스튜디오 투어 / 해리포터 존", "앱 대기시간 기준으로 동선 조정"], ["저녁", "CityWalk", "식사 후 여유 있게 복귀"]],
   },
   {
     day: 4, date: "9/28", week: "월", type: "vegas move", city: "Vegas", title: "LA → Las Vegas 이동",
     desc: "오전 출발, 오후 체크인, 밤에는 스트립 야경.",
     img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
+    area: "LA에서 북동쪽 · Mojave 경유",
+    stayTime: "LA 출발 기준 4-5시간 운전",
     tip: "이동일에는 욕심내지 말고 스트립 야경만 가볍게.",
-    schedule: [["오전", "LA 출발", "4~5시간 운전 예상"], ["오후", "Las Vegas 체크인", "휴식"], ["저녁", "Strip / Bellagio Fountains", "첫날 야경"]],
+    schedule: [["오전", "LA 출발", "간식/물 준비 후 고속도로 이동"], ["점심", "중간 휴게", "Barstow 근처 휴식 후보"], ["오후", "Las Vegas 체크인", "주차, 짐 정리, 휴식"], ["저녁", "Strip / Bellagio Fountains", "첫날 야경만 가볍게"]],
   },
   {
     day: 5, date: "9/29", week: "화", type: "vegas must", city: "Vegas", title: "Sphere 필수 · The Wizard of Oz",
     desc: "이번 여행의 베가스 핵심 체험. 17:00 공연 기준으로 일정 고정.",
     img: "https://images.unsplash.com/photo-1695668768015-418077d78d3e?auto=format&fit=crop&w=1000&q=85",
+    area: "Vegas Strip 동쪽 · Sphere",
+    stayTime: "Vegas Strip 숙소 기준 10-25분",
     tip: "Ticketmaster 안내상 공연 시간 시작 후 늦은 입장이 불가하다. 문은 공연 45분 전 오픈 안내.",
     schedule: [["오전", "늦잠 / 브런치", "전날 이동 피로 회복"], ["오후", "Bellagio · Venetian", "가벼운 호텔 투어"], ["17:00", "Sphere · The Wizard of Oz", "필수 예약 일정"], ["저녁", "가벼운 식사 / 스트립", "공연 후 여유"]],
   },
@@ -147,36 +160,46 @@ const scheduleData = [
     day: 6, date: "9/30", week: "수", type: "vegas", city: "Vegas", title: "그랜드캐년 or 베가스 여유일",
     desc: "체력에 따라 선택. 강행하면 그랜드캐년, 쉬려면 쇼핑·수영장.",
     img: "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=1000&q=85",
+    area: "선택 일정 · Grand Canyon West 또는 Vegas 시내",
+    stayTime: "그랜드캐년 선택 시 편도 약 2-2.5시간",
     tip: "그랜드캐년은 이동 시간이 길다. 전날 과음 금지.",
-    schedule: [["옵션 A", "Grand Canyon 투어", "사전 예약 권장"], ["옵션 B", "수영장 · 쇼핑 · 카지노", "휴식형 일정"], ["밤", "마지막 베가스 야경", "High Roller / Sphere 외관"]],
+    schedule: [["옵션 A", "Grand Canyon 투어", "사전 예약, 이른 출발 권장"], ["옵션 B", "수영장 · 쇼핑 · 카지노", "체력 회복 중심의 휴식형 일정"], ["저녁", "Vegas 마지막 식사", "예약 가능한 레스토랑 후보 확인"], ["밤", "마지막 베가스 야경", "High Roller / Sphere 외관"]],
   },
   {
     day: 7, date: "10/1", week: "목", type: "la move", city: "LA", title: "Las Vegas → LA 복귀",
     desc: "복귀 이동일. 저녁은 가볍게.",
     img: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85",
+    area: "Vegas에서 남서쪽 · LA 복귀",
+    stayTime: "Vegas 출발 기준 4.5-6시간 운전",
     tip: "복귀일은 피로가 크므로 일정 최소화.",
-    schedule: [["오전", "Vegas 체크아웃", "점심 전 출발"], ["오후", "LA 도착", "짐 정리"], ["저녁", "가벼운 식사", "한인타운 후보"]],
+    schedule: [["오전", "Vegas 체크아웃", "점심 전 출발 목표"], ["점심", "중간 휴게", "운전 피로 보며 휴식"], ["오후", "LA 도착", "숙소 체크인, 짐 정리"], ["저녁", "가벼운 식사", "한인타운 후보"]],
   },
   {
     day: 8, date: "10/2", week: "금", type: "la", city: "LA", title: "Citadel Outlets 쇼핑",
     desc: "후반부 첫 풀데이. 쇼핑 중심.",
     img: "https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=1000&q=85",
+    area: "LA 동쪽 · Commerce",
+    stayTime: "LA 임시 숙소 기준 25-50분",
     tip: "영업시간 확인 후 방문. 렌터카 있을 때 가기 좋음.",
-    schedule: [["오전", "느긋한 출발", "전날 이동 피로 고려"], ["오후", "Citadel Outlets", "쇼핑과 식사"], ["저녁", "숙소 복귀", "구매품 정리"]],
+    schedule: [["오전", "느긋한 출발", "전날 이동 피로 고려"], ["점심", "Citadel Outlets 도착", "식사 후 쇼핑 시작"], ["오후", "Citadel Outlets", "브랜드별 우선순위로 이동"], ["저녁", "숙소 복귀", "구매품 정리, 캐리어 무게 확인"]],
   },
   {
     day: 9, date: "10/3", week: "토", type: "la must", city: "LA", title: "스포츠 슬롯 · NBA/MLB 대기",
     desc: "NBA 프리시즌 또는 MLB 포스트시즌 가능성 확인용으로 저녁을 비워둠.",
     img: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=1000&q=85",
+    area: "LA 서쪽 해안 또는 Downtown 경기장",
+    stayTime: "LA 임시 숙소 기준 20-55분",
     tip: "현재 확정 가능한 LA 홈 MLB/NBA 일정은 없다. 여행 가까워지면 Lakers/Clippers 프리시즌 또는 Dodgers 포스트시즌 여부 확인.",
-    schedule: [["오전", "Venice Canals / Beach", "산책"], ["오후", "Abbot Kinney / Santa Monica", "카페와 쇼핑"], ["저녁", "스포츠 슬롯", "NBA/MLB 일정 뜨면 교체"]],
+    schedule: [["오전", "Venice Canals / Beach", "산책, 사진, 해변 분위기"], ["점심", "Abbot Kinney", "카페/브런치 후보"], ["오후", "Santa Monica", "쇼핑 또는 해변 산책"], ["저녁", "스포츠 슬롯", "NBA/MLB 일정 뜨면 경기로 교체"]],
   },
   {
     day: 10, date: "10/4~10/5", week: "일", type: "la move", city: "LA", title: "마무리 · LAX 이동",
     desc: "마지막 날은 공항 이동 리스크 관리.",
     img: "https://images.unsplash.com/photo-1583404314681-407e4f3757f6?auto=format&fit=crop&w=1000&q=85",
+    area: "LA 서쪽 · LAX 공항권",
+    stayTime: "LA 임시 숙소 기준 25-70분",
     tip: "국제선은 렌터카 반납과 공항 이동을 넉넉하게.",
-    schedule: [["오전", "체크아웃 / 짐 정리", "쇼핑 물품 무게 확인"], ["출국 전", "렌터카 반납 → LAX", "여유 도착"]],
+    schedule: [["오전", "체크아웃 / 짐 정리", "쇼핑 물품 무게 확인"], ["점심", "가벼운 식사", "공항 이동 전 부담 없는 식사"], ["출국 전", "렌터카 반납 → LAX", "국제선 기준 넉넉하게 도착"]],
   },
 ];
 
@@ -242,14 +265,18 @@ function renderTrips() {
 
 function renderSchedule(filter = "all") {
   const filters = document.getElementById("scheduleFilters");
-  const activeLabel = filter === "all" ? "전체" : filter === "must" ? "필수" : filter === "move" ? "이동" : filter.toUpperCase();
   filters.innerHTML = ["all", "la", "vegas", "must", "move"].map(f => `<button class="filter ${f === filter ? "active" : ""}" data-filter="${f}">${f === "all" ? "전체" : f === "la" ? "LA" : f === "vegas" ? "Vegas" : f === "must" ? "필수" : "이동"}</button>`).join("");
-  filters.querySelectorAll(".filter").forEach(btn => btn.addEventListener("click", () => renderSchedule(btn.dataset.filter)));
+  filters.querySelectorAll(".filter").forEach(btn => btn.addEventListener("click", () => {
+    activeDayIndex = 0;
+    renderSchedule(btn.dataset.filter);
+  }));
 
   const list = document.getElementById("scheduleList");
   list.innerHTML = "";
-  scheduleData.filter(item => filter === "all" || item.type.includes(filter)).forEach(item => {
+  visibleSchedule = scheduleData.filter(item => filter === "all" || item.type.includes(filter));
+  visibleSchedule.forEach((item, index) => {
     const card = el("article", "day-card");
+    card.dataset.index = String(index);
     card.innerHTML = `
       <div class="day-banner">
         <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><circle cx=\"950\" cy=\"180\" r=\"160\" fill=\"#1f2a48\"/><circle cx=\"220\" cy=\"560\" r=\"260\" fill=\"#18223d\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">
@@ -265,9 +292,14 @@ function renderSchedule(filter = "all") {
       <div class="day-body">
         <h4>${item.title}</h4>
         <p>${item.desc}</p>
+        <div class="logistics">
+          <div><span>위치</span><strong>${item.area}</strong></div>
+          <div><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
+        </div>
         <div class="timeline">
           ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer"><strong>${slot[1]}</strong></a><span>${slot[2]}</span></div></div>`).join("")}
         </div>
+        <div class="day-tip">${item.tip}</div>
         <div class="day-actions">
           <a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵</a>
           <button class="small-btn" type="button" data-open="${item.day}">상세 열기</button>
@@ -277,6 +309,8 @@ function renderSchedule(filter = "all") {
     card.querySelector("[data-open]").addEventListener("click", () => openScheduleModal(item));
     list.appendChild(card);
   });
+  updateDayStatus();
+  requestAnimationFrame(() => scrollToDay(activeDayIndex, "auto"));
 }
 
 function renderEntityList(containerId, items, kind = "entity") {
@@ -369,9 +403,33 @@ function openScheduleModal(item) {
   document.getElementById("modalKicker").textContent = `${item.date} · ${item.week} · ${item.city}`;
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.tip;
-  document.getElementById("modalMeta").innerHTML = item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer">${slot[1]}</a><br>${slot[2]}</strong></div>`).join("");
+  document.getElementById("modalMeta").innerHTML = `
+    <div class="meta-card"><span>위치</span><strong>${item.area}</strong></div>
+    <div class="meta-card"><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
+    ${item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer">${slot[1]}</a><br>${slot[2]}</strong></div>`).join("")}
+  `;
   document.getElementById("modalActions").innerHTML = `<a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵 열기</a><button class="small-btn" type="button" id="closeFromSchedule">닫기</button>`;
   document.getElementById("closeFromSchedule").addEventListener("click", closeModal);
+}
+
+function updateDayStatus() {
+  const status = document.getElementById("dayStatus");
+  if (!status) return;
+  if (!visibleSchedule.length) {
+    status.textContent = "일정 없음";
+    return;
+  }
+  const item = visibleSchedule[Math.min(activeDayIndex, visibleSchedule.length - 1)];
+  status.textContent = `DAY ${item.day} / ${scheduleData.length} · ${item.date} ${item.week}`;
+}
+
+function scrollToDay(index, behavior = "smooth") {
+  const list = document.getElementById("scheduleList");
+  const card = list?.querySelector(`[data-index="${index}"]`);
+  if (!card) return;
+  activeDayIndex = Math.max(0, Math.min(index, visibleSchedule.length - 1));
+  card.scrollIntoView({ behavior, block: "nearest", inline: "center" });
+  updateDayStatus();
 }
 
 function closeModal() {
@@ -409,6 +467,30 @@ function bindNavigation() {
       jumpToSection(btn.dataset.tabJump);
     });
   });
+  document.getElementById("prevDay").addEventListener("click", () => {
+    scrollToDay(activeDayIndex - 1);
+  });
+  document.getElementById("nextDay").addEventListener("click", () => {
+    scrollToDay(activeDayIndex + 1);
+  });
+  document.getElementById("scheduleList").addEventListener("scroll", () => {
+    const list = document.getElementById("scheduleList");
+    const cards = [...list.querySelectorAll(".day-card")];
+    if (!cards.length) return;
+    const center = list.scrollLeft + list.clientWidth / 2;
+    let closest = 0;
+    let distance = Infinity;
+    cards.forEach((card, index) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const nextDistance = Math.abs(cardCenter - center);
+      if (nextDistance < distance) {
+        distance = nextDistance;
+        closest = index;
+      }
+    });
+    activeDayIndex = closest;
+    updateDayStatus();
+  }, { passive: true });
   document.getElementById("exportBtn").addEventListener("click", () => window.print());
   document.getElementById("closeModal").addEventListener("click", closeModal);
   document.getElementById("detailModal").addEventListener("click", (e) => {
