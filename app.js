@@ -34,7 +34,7 @@ const tripSections = [
       { label: "체크리스트", href: "#checklist", kind: "link" },
       { label: "모달 열기", action: "modal", kind: "button" },
     ],
-    hero: "https://images.unsplash.com/photo-1533659828870-95ee305cee3f?auto=format&fit=crop&w=1200&q=85",
+    hero: "https://images.unsplash.com/photo-1517400508447-f8dd518b86db?auto=format&fit=crop&w=1200&q=85",
   },
 ];
 
@@ -110,6 +110,16 @@ function mapsSearchUrl(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
+const locationLabels = {
+  west: "LA 서쪽",
+  north: "LA 북쪽",
+  northeast: "북동쪽 이동",
+  vegasEast: "Strip 동쪽",
+  vegasWest: "Vegas 외곽",
+  east: "LA 동쪽",
+  airport: "공항권",
+};
+
 const scheduleData = [
   {
     day: 1, date: "9/25", week: "금", type: "la", city: "LA", title: "LA 도착 · 산타모니카 적응",
@@ -117,6 +127,7 @@ const scheduleData = [
     img: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1000&q=85",
     area: "LA 서쪽 해안 · 산타모니카",
     stayTime: "LA 임시 숙소 기준 30-50분",
+    position: "west",
     tip: "첫날은 컨디션 관리가 핵심. 야간 장거리 운전은 비추천.",
     schedule: [["도착 후", "LAX → 체크인", "입국, 렌터카/이동, 짐 정리"], ["저녁", "Santa Monica Pier", "해변 산책, 가벼운 식사, 노을 보기"], ["밤", "시차 적응", "근처 마트 들른 뒤 일찍 쉬기"]],
   },
@@ -126,15 +137,17 @@ const scheduleData = [
     img: "https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=1000&q=85",
     area: "LA 북부/중부 · Hollywood-Beverly-Griffith",
     stayTime: "LA 임시 숙소 기준 각 구간 20-45분",
+    position: "north",
     tip: "주말 그리피스는 혼잡하므로 일몰 1시간 전 도착 추천.",
     schedule: [["오전", "Hollywood Walk of Fame", "사진 포인트 위주로 짧게"], ["점심", "Beverly Hills", "이동 중 식사 후보 확인"], ["오후", "Rodeo Drive", "거리 구경, 카페 쉬는 시간"], ["저녁", "Griffith Observatory", "일몰 전 도착, 야경 보고 복귀"]],
   },
   {
     day: 3, date: "9/27", week: "일", type: "la", city: "LA", title: "Universal Studios Hollywood",
     desc: "미국식 체험형 관광 핵심. 하루 통째로 배정.",
-    img: "https://images.unsplash.com/photo-1569135219920-00898b584df4?auto=format&fit=crop&w=1000&q=85",
+    img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1000&q=85",
     area: "LA 북쪽 · Universal City",
     stayTime: "LA 임시 숙소 기준 25-55분",
+    position: "north",
     tip: "운영시간은 날짜별로 다르므로 공식 캘린더 확인 후 티켓 예약.",
     schedule: [["오전", "오픈런", "입장 직후 인기 어트랙션 우선"], ["점심", "파크 내부 식사", "대기시간 보며 가까운 곳 선택"], ["오후", "스튜디오 투어 / 해리포터 존", "앱 대기시간 기준으로 동선 조정"], ["저녁", "CityWalk", "식사 후 여유 있게 복귀"]],
   },
@@ -144,15 +157,17 @@ const scheduleData = [
     img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
     area: "LA에서 북동쪽 · Mojave 경유",
     stayTime: "LA 출발 기준 4-5시간 운전",
+    position: "northeast",
     tip: "이동일에는 욕심내지 말고 스트립 야경만 가볍게.",
     schedule: [["오전", "LA 출발", "간식/물 준비 후 고속도로 이동"], ["점심", "중간 휴게", "Barstow 근처 휴식 후보"], ["오후", "Las Vegas 체크인", "주차, 짐 정리, 휴식"], ["저녁", "Strip / Bellagio Fountains", "첫날 야경만 가볍게"]],
   },
   {
     day: 5, date: "9/29", week: "화", type: "vegas must", city: "Vegas", title: "Sphere 필수 · The Wizard of Oz",
     desc: "이번 여행의 베가스 핵심 체험. 17:00 공연 기준으로 일정 고정.",
-    img: "https://images.unsplash.com/photo-1695668768015-418077d78d3e?auto=format&fit=crop&w=1000&q=85",
+    img: "https://images.unsplash.com/photo-1517400508447-f8dd518b86db?auto=format&fit=crop&w=1000&q=85",
     area: "Vegas Strip 동쪽 · Sphere",
     stayTime: "Vegas Strip 숙소 기준 10-25분",
+    position: "vegasEast",
     tip: "Ticketmaster 안내상 공연 시간 시작 후 늦은 입장이 불가하다. 문은 공연 45분 전 오픈 안내.",
     schedule: [["오전", "늦잠 / 브런치", "전날 이동 피로 회복"], ["오후", "Bellagio · Venetian", "가벼운 호텔 투어"], ["17:00", "Sphere · The Wizard of Oz", "필수 예약 일정"], ["저녁", "가벼운 식사 / 스트립", "공연 후 여유"]],
   },
@@ -162,6 +177,7 @@ const scheduleData = [
     img: "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=1000&q=85",
     area: "선택 일정 · Grand Canyon West 또는 Vegas 시내",
     stayTime: "그랜드캐년 선택 시 편도 약 2-2.5시간",
+    position: "vegasWest",
     tip: "그랜드캐년은 이동 시간이 길다. 전날 과음 금지.",
     schedule: [["옵션 A", "Grand Canyon 투어", "사전 예약, 이른 출발 권장"], ["옵션 B", "수영장 · 쇼핑 · 카지노", "체력 회복 중심의 휴식형 일정"], ["저녁", "Vegas 마지막 식사", "예약 가능한 레스토랑 후보 확인"], ["밤", "마지막 베가스 야경", "High Roller / Sphere 외관"]],
   },
@@ -171,15 +187,17 @@ const scheduleData = [
     img: "https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85",
     area: "Vegas에서 남서쪽 · LA 복귀",
     stayTime: "Vegas 출발 기준 4.5-6시간 운전",
+    position: "northeast",
     tip: "복귀일은 피로가 크므로 일정 최소화.",
     schedule: [["오전", "Vegas 체크아웃", "점심 전 출발 목표"], ["점심", "중간 휴게", "운전 피로 보며 휴식"], ["오후", "LA 도착", "숙소 체크인, 짐 정리"], ["저녁", "가벼운 식사", "한인타운 후보"]],
   },
   {
     day: 8, date: "10/2", week: "금", type: "la", city: "LA", title: "Citadel Outlets 쇼핑",
     desc: "후반부 첫 풀데이. 쇼핑 중심.",
-    img: "https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=1000&q=85",
+    img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1000&q=85",
     area: "LA 동쪽 · Commerce",
     stayTime: "LA 임시 숙소 기준 25-50분",
+    position: "east",
     tip: "영업시간 확인 후 방문. 렌터카 있을 때 가기 좋음.",
     schedule: [["오전", "느긋한 출발", "전날 이동 피로 고려"], ["점심", "Citadel Outlets 도착", "식사 후 쇼핑 시작"], ["오후", "Citadel Outlets", "브랜드별 우선순위로 이동"], ["저녁", "숙소 복귀", "구매품 정리, 캐리어 무게 확인"]],
   },
@@ -189,15 +207,17 @@ const scheduleData = [
     img: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=1000&q=85",
     area: "LA 서쪽 해안 또는 Downtown 경기장",
     stayTime: "LA 임시 숙소 기준 20-55분",
+    position: "west",
     tip: "현재 확정 가능한 LA 홈 MLB/NBA 일정은 없다. 여행 가까워지면 Lakers/Clippers 프리시즌 또는 Dodgers 포스트시즌 여부 확인.",
     schedule: [["오전", "Venice Canals / Beach", "산책, 사진, 해변 분위기"], ["점심", "Abbot Kinney", "카페/브런치 후보"], ["오후", "Santa Monica", "쇼핑 또는 해변 산책"], ["저녁", "스포츠 슬롯", "NBA/MLB 일정 뜨면 경기로 교체"]],
   },
   {
     day: 10, date: "10/4~10/5", week: "일", type: "la move", city: "LA", title: "마무리 · LAX 이동",
     desc: "마지막 날은 공항 이동 리스크 관리.",
-    img: "https://images.unsplash.com/photo-1583404314681-407e4f3757f6?auto=format&fit=crop&w=1000&q=85",
+    img: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1000&q=85",
     area: "LA 서쪽 · LAX 공항권",
     stayTime: "LA 임시 숙소 기준 25-70분",
+    position: "airport",
     tip: "국제선은 렌터카 반납과 공항 이동을 넉넉하게.",
     schedule: [["오전", "체크아웃 / 짐 정리", "쇼핑 물품 무게 확인"], ["점심", "가벼운 식사", "공항 이동 전 부담 없는 식사"], ["출국 전", "렌터카 반납 → LAX", "국제선 기준 넉넉하게 도착"]],
   },
@@ -292,13 +312,24 @@ function createScheduleCard(item) {
         ${item.type.includes("must") ? '<span class="day-tag">필수</span>' : ""}
       </div>
     </div>
-    <div class="day-body">
-      <h4>${item.title}</h4>
-      <p>${item.desc}</p>
-      <div class="logistics">
-        <div><span>위치</span><strong>${item.area}</strong></div>
-        <div><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
-      </div>
+      <div class="day-body">
+        <h4>${item.title}</h4>
+        <p>${item.desc}</p>
+        <div class="location-card">
+          <div class="mini-map ${item.position || "west"}">
+            <span class="map-base">숙소</span>
+            <span class="map-pin">목적지</span>
+          </div>
+          <div class="location-copy">
+            <span>대략 위치</span>
+            <strong>${locationLabels[item.position] || item.area}</strong>
+            <small>${item.area}</small>
+          </div>
+        </div>
+        <div class="logistics">
+          <div><span>위치</span><strong>${item.area}</strong></div>
+          <div><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
+        </div>
       <div class="timeline">
         ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer"><strong>${slot[1]}</strong></a><span>${slot[2]}</span></div></div>`).join("")}
       </div>
@@ -423,6 +454,7 @@ function openScheduleModal(item) {
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.tip;
   document.getElementById("modalMeta").innerHTML = `
+    <div class="meta-card"><span>대략 위치</span><strong>${locationLabels[item.position] || item.area}</strong></div>
     <div class="meta-card"><span>위치</span><strong>${item.area}</strong></div>
     <div class="meta-card"><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
     ${item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer">${slot[1]}</a><br>${slot[2]}</strong></div>`).join("")}

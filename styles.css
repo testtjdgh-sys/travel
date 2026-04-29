@@ -313,6 +313,100 @@ a,button{-webkit-tap-highlight-color:transparent}
 .day-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .place-link{color:inherit;text-decoration:none}
 .place-link:hover{text-decoration:underline}
+.location-card{
+  display:grid;
+  grid-template-columns:96px minmax(0,1fr);
+  gap:10px;
+  margin:0 0 12px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:10px;
+  background:linear-gradient(135deg,rgba(96,165,250,.12),rgba(255,255,255,.045));
+}
+.mini-map{
+  position:relative;
+  min-height:76px;
+  border-radius:14px;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(255,255,255,.055) 1px,transparent 1px),
+    rgba(15,23,42,.72);
+  background-size:24px 24px;
+}
+.mini-map::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:44px;
+  height:2px;
+  background:rgba(191,219,254,.55);
+  transform-origin:left center;
+}
+.map-base,.map-pin{
+  position:absolute;
+  z-index:1;
+  display:grid;
+  place-items:center;
+  width:34px;
+  height:22px;
+  border-radius:999px;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.map-base{
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  background:#e5e7eb;
+  color:#111827;
+}
+.map-pin{
+  background:var(--orange);
+  color:#111827;
+  box-shadow:0 8px 18px rgba(251,146,60,.24);
+}
+.mini-map.west::before{transform:rotate(180deg)}
+.mini-map.north::before{transform:rotate(-90deg)}
+.mini-map.northeast::before{transform:rotate(-36deg);width:52px}
+.mini-map.vegasEast::before{transform:rotate(12deg);width:50px}
+.mini-map.vegasWest::before{transform:rotate(210deg);width:54px}
+.mini-map.east::before{transform:rotate(0deg)}
+.mini-map.airport::before{transform:rotate(145deg);width:46px}
+.mini-map.west .map-pin{left:8px;top:50%;transform:translateY(-50%)}
+.mini-map.north .map-pin{left:50%;top:8px;transform:translateX(-50%)}
+.mini-map.northeast .map-pin{right:8px;top:12px}
+.mini-map.vegasEast .map-pin{right:8px;top:50%;transform:translateY(-50%)}
+.mini-map.vegasWest .map-pin{left:8px;bottom:10px}
+.mini-map.east .map-pin{right:8px;top:50%;transform:translateY(-50%)}
+.mini-map.airport .map-pin{left:12px;bottom:10px}
+.location-copy{
+  min-width:0;
+  align-self:center;
+}
+.location-copy span{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:900;
+  margin-bottom:5px;
+}
+.location-copy strong{
+  display:block;
+  font-size:14px;
+  line-height:1.25;
+  color:var(--text);
+}
+.location-copy small{
+  display:block;
+  margin-top:5px;
+  color:var(--muted);
+  line-height:1.35;
+  font-size:11px;
+  overflow-wrap:anywhere;
+}
 .logistics{
   display:grid;
   grid-template-columns:1fr;
@@ -641,6 +735,14 @@ a,button{-webkit-tap-highlight-color:transparent}
     grid-template-columns:1fr;
     gap:7px;
   }
+  .location-card{
+    grid-template-columns:86px minmax(0,1fr);
+    gap:8px;
+    padding:9px;
+    border-radius:14px;
+  }
+  .mini-map{min-height:70px}
+  .location-copy strong{font-size:13px}
   .logistics div{
     padding:9px;
     border-radius:12px;
