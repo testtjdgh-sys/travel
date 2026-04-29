@@ -3,909 +3,166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>LA · Vegas Mobile Trip</title>
-  <meta name="description" content="모바일로 확인하기 좋은 LA-라스베가스 여행 일정 앱" />
-  <style>
-    :root{
-      --bg:#070b18;
-      --card:#111827;
-      --card2:#172033;
-      --text:#f8fafc;
-      --muted:#a8b3c7;
-      --line:rgba(255,255,255,.12);
-      --blue:#60a5fa;
-      --orange:#fb923c;
-      --pink:#fb7185;
-      --green:#34d399;
-      --purple:#a78bfa;
-      --yellow:#fbbf24;
-      --white:#fff;
-      --radius:24px;
-      --shadow:0 18px 54px rgba(0,0,0,.35);
-      --bottom:82px;
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(96,165,250,.25), transparent 24rem),
-        radial-gradient(circle at 80% 0%, rgba(251,146,60,.20), transparent 22rem),
-        linear-gradient(180deg,#080d1d 0%,#0b1020 45%,#060913 100%);
-      padding-bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
-    }
-
-    a{color:inherit;text-decoration:none}
-    button{font-family:inherit}
-
-    .app{
-      width:min(720px,100%);
-      margin:0 auto;
-      padding:14px 14px 0;
-    }
-
-    .top{
-      position:sticky;
-      top:0;
-      z-index:30;
-      padding:10px 0 12px;
-      backdrop-filter:blur(18px);
-      background:linear-gradient(180deg,rgba(7,11,24,.92),rgba(7,11,24,.62));
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .brand-left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width:0;
-    }
-
-    .logo{
-      width:42px;height:42px;border-radius:15px;
-      display:grid;place-items:center;
-      background:linear-gradient(135deg,var(--blue),var(--orange));
-      box-shadow:0 12px 28px rgba(96,165,250,.28);
-      flex:0 0 auto;
-    }
-
-    .brand h1{
-      font-size:17px;
-      line-height:1.1;
-      margin:0;
-      letter-spacing:-.02em;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .brand small{
-      display:block;
-      color:var(--muted);
-      margin-top:2px;
-      font-size:12px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-
-    .ghost{
-      border:1px solid var(--line);
-      color:var(--text);
-      background:rgba(255,255,255,.08);
-      border-radius:999px;
-      padding:9px 12px;
-      font-weight:900;
-      font-size:12px;
-    }
-
-    .hero{
-      margin-top:8px;
-      border:1px solid var(--line);
-      border-radius:30px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      background:#111827;
-      position:relative;
-    }
-
-    .hero-img{
-      height:260px;
-      background:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=85') center/cover;
-      position:relative;
-      transition:.25s ease;
-    }
-
-    .hero-img::after{
-      content:"";
-      position:absolute;inset:0;
-      background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.78) 100%);
-    }
-
-    .hero-copy{
-      position:absolute;
-      left:18px;right:18px;bottom:18px;
-      z-index:1;
-    }
-
-    .date-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:7px;
-      padding:7px 10px;
-      border-radius:999px;
-      background:rgba(255,255,255,.16);
-      border:1px solid rgba(255,255,255,.18);
-      backdrop-filter:blur(12px);
-      font-size:12px;
-      font-weight:900;
-      margin-bottom:10px;
-    }
-
-    .hero h2{
-      margin:0 0 6px;
-      font-size:32px;
-      line-height:.98;
-      letter-spacing:-.055em;
-    }
-
-    .hero p{
-      margin:0;
-      color:rgba(255,255,255,.78);
-      font-size:14px;
-      max-width:92%;
-    }
-
-    .quick-actions{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:9px;
-      margin:14px 0;
-    }
-
-    .qa{
-      border:1px solid var(--line);
-      border-radius:20px;
-      background:rgba(255,255,255,.07);
-      padding:13px 10px;
-      text-align:center;
-      min-height:74px;
-      display:grid;
-      place-items:center;
-      gap:4px;
-    }
-
-    .qa b{font-size:20px;line-height:1}
-    .qa span{font-size:12px;color:var(--muted);font-weight:800}
-
-    .section-title{
-      margin:20px 2px 10px;
-      display:flex;
-      align-items:end;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    .section-title h2{
-      margin:0;
-      font-size:20px;
-      letter-spacing:-.03em;
-    }
-
-    .section-title span{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:800;
-    }
-
-    .must-grid{
-      display:grid;
-      gap:10px;
-    }
-
-    .must{
-      border:1px solid var(--line);
-      background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
-      border-radius:24px;
-      padding:15px;
-      display:grid;
-      grid-template-columns:46px 1fr;
-      gap:12px;
-      align-items:start;
-    }
-
-    .must-icon{
-      width:46px;height:46px;border-radius:16px;
-      display:grid;place-items:center;
-      font-size:22px;
-      background:rgba(255,255,255,.12);
-    }
-
-    .must h3{
-      margin:0 0 5px;
-      font-size:16px;
-      letter-spacing:-.02em;
-    }
-
-    .must p{
-      margin:0 0 10px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .btns{display:flex;flex-wrap:wrap;gap:8px}
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      border-radius:14px;
-      padding:9px 11px;
-      font-weight:900;
-      font-size:12px;
-    }
-    .btn.primary{background:var(--text);color:#111827;border-color:var(--text)}
-    .btn.blue{background:rgba(96,165,250,.18);color:#dbeafe;border-color:rgba(96,165,250,.35)}
-    .btn.orange{background:rgba(251,146,60,.18);color:#ffedd5;border-color:rgba(251,146,60,.35)}
-
-    .map-card{
-      border:1px solid var(--line);
-      border-radius:26px;
-      overflow:hidden;
-      background:rgba(255,255,255,.07);
-      box-shadow:var(--shadow);
-    }
-
-    iframe{
-      border:0;
-      width:100%;
-      height:260px;
-      display:block;
-      background:#111827;
-    }
-
-    .map-info{
-      padding:13px 14px 14px;
-    }
-
-    .map-info b{
-      display:block;
-      margin-bottom:4px;
-      font-size:15px;
-    }
-
-    .map-info p{
-      margin:0 0 10px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .filters{
-      display:flex;
-      gap:8px;
-      overflow:auto;
-      padding:2px 0 10px;
-      scrollbar-width:none;
-    }
-    .filters::-webkit-scrollbar{display:none}
-    .filter{
-      white-space:nowrap;
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:10px 13px;
-      background:rgba(255,255,255,.08);
-      color:var(--text);
-      font-weight:900;
-      font-size:13px;
-    }
-    .filter.active{background:var(--text);color:#111827;border-color:var(--text)}
-
-    .day-list{
-      display:grid;
-      gap:12px;
-    }
-
-    .day{
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.08);
-      border-radius:26px;
-      overflow:hidden;
-      box-shadow:0 14px 36px rgba(0,0,0,.18);
-    }
-
-    .day-img{
-      height:150px;
-      background-size:cover;
-      background-position:center;
-      position:relative;
-    }
-    .day-img::after{
-      content:"";
-      position:absolute;inset:0;
-      background:linear-gradient(180deg,transparent,rgba(0,0,0,.65));
-    }
-
-    .day-no{
-      position:absolute;
-      left:14px;
-      bottom:10px;
-      z-index:1;
-      font-size:34px;
-      font-weight:950;
-      letter-spacing:-.08em;
-    }
-
-    .badge-row{
-      position:absolute;
-      right:10px;
-      bottom:12px;
-      z-index:1;
-      display:flex;
-      gap:6px;
-    }
-
-    .badge{
-      padding:6px 9px;
-      border-radius:999px;
-      font-size:11px;
-      font-weight:950;
-      background:rgba(255,255,255,.18);
-      border:1px solid rgba(255,255,255,.22);
-      backdrop-filter:blur(10px);
-    }
-
-    .day-body{
-      padding:15px;
-    }
-
-    .day h3{
-      margin:0 0 6px;
-      font-size:19px;
-      letter-spacing:-.035em;
-    }
-
-    .day-desc{
-      margin:0 0 12px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .timeline{
-      display:grid;
-      gap:8px;
-      margin-bottom:13px;
-    }
-
-    .slot{
-      display:grid;
-      grid-template-columns:62px 1fr;
-      gap:9px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.09);
-      border-radius:16px;
-      padding:10px;
-    }
-
-    .slot-time{
-      color:#bfdbfe;
-      font-size:12px;
-      font-weight:950;
-    }
-
-    .slot strong{
-      display:block;
-      font-size:13px;
-      margin-bottom:1px;
-    }
-
-    .slot span{
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .sports-alert{
-      border:1px solid rgba(251,191,36,.35);
-      background:rgba(251,191,36,.10);
-      border-radius:20px;
-      padding:13px;
-      margin-bottom:12px;
-    }
-
-    .sports-alert b{
-      color:#fde68a;
-      display:block;
-      margin-bottom:4px;
-    }
-
-    .sports-alert p{
-      margin:0;
-      color:#fef3c7;
-      font-size:13px;
-    }
-
-    .bottom-nav{
-      position:fixed;
-      left:0;right:0;bottom:0;
-      z-index:60;
-      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-      background:rgba(7,11,24,.86);
-      backdrop-filter:blur(18px);
-      border-top:1px solid var(--line);
-    }
-
-    .bottom-inner{
-      width:min(720px,100%);
-      margin:0 auto;
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:8px;
-    }
-
-    .nav-btn{
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.07);
-      color:var(--text);
-      border-radius:18px;
-      padding:9px 4px;
-      display:grid;
-      place-items:center;
-      gap:3px;
-      font-size:11px;
-      font-weight:900;
-    }
-
-    .nav-btn span{font-size:18px;line-height:1}
-
-    .modal{
-      position:fixed;
-      inset:0;
-      z-index:100;
-      display:none;
-      align-items:flex-end;
-      background:rgba(0,0,0,.65);
-      backdrop-filter:blur(8px);
-    }
-
-    .modal.open{display:flex}
-
-    .sheet{
-      width:100%;
-      max-height:88vh;
-      overflow:auto;
-      background:#0f172a;
-      border:1px solid var(--line);
-      border-radius:28px 28px 0 0;
-      box-shadow:var(--shadow);
-      padding-bottom:env(safe-area-inset-bottom);
-    }
-
-    .sheet-img{
-      height:220px;
-      background-size:cover;
-      background-position:center;
-      position:relative;
-    }
-    .sheet-img::after{
-      content:"";
-      position:absolute;inset:0;
-      background:linear-gradient(180deg,transparent,rgba(15,23,42,.85));
-    }
-    .sheet-title{
-      position:absolute;
-      left:16px;right:52px;bottom:15px;
-      z-index:1;
-    }
-    .sheet-title h2{
-      margin:0 0 4px;
-      font-size:25px;
-      letter-spacing:-.04em;
-    }
-    .sheet-title p{
-      margin:0;color:rgba(255,255,255,.75);font-size:13px;
-    }
-
-    .close{
-      position:absolute;
-      right:13px;top:13px;
-      width:40px;height:40px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.25);
-      background:rgba(0,0,0,.35);
-      color:white;
-      font-size:22px;
-      z-index:2;
-    }
-
-    .sheet-body{padding:15px}
-    .tip{
-      border-left:4px solid var(--orange);
-      background:rgba(251,146,60,.12);
-      color:#ffedd5;
-      border-radius:16px;
-      padding:12px;
-      font-size:13px;
-      margin:12px 0;
-    }
-
-    .checklist{
-      display:grid;
-      gap:8px;
-    }
-
-    .check{
-      display:flex;
-      gap:9px;
-      align-items:flex-start;
-      border:1px solid var(--line);
-      background:rgba(255,255,255,.07);
-      border-radius:16px;
-      padding:11px;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .source-note{
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
-      margin:12px 2px 4px;
-    }
-
-    @media (min-width:760px){
-      .hero-img{height:340px}
-      iframe{height:320px}
-      .day-img{height:210px}
-      .quick-actions{grid-template-columns:repeat(5,1fr)}
-      .bottom-nav{display:none}
-      body{padding-bottom:40px}
-    }
-
-    @media print{
-      body{background:white;color:#111827;padding:0}
-      .top,.bottom-nav,.map-card,.btns,.filters,.modal{display:none!important}
-      .app{width:100%;padding:0}
-      .hero,.day,.must{box-shadow:none;break-inside:avoid;color:#111827;background:white;border:1px solid #ddd}
-      .day-desc,.slot span,.source-note{color:#555}
-    }
-  </style>
+  <title>Travel HQ</title>
+  <meta name="description" content="미국 여행 계획을 한 화면에서 관리하는 모바일 중심 대시보드" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <main class="app">
-    <header class="top">
+  <main class="app-shell">
+    <header class="topbar">
       <div class="brand">
-        <div class="brand-left">
-          <div class="logo">🌴</div>
-          <div>
-            <h1>LA · Vegas 여행 보드</h1>
-            <small>중간중간 모바일로 확인하는 일정표</small>
-          </div>
+        <div class="brand-mark">✈</div>
+        <div class="brand-copy">
+          <h1>Travel HQ</h1>
+          <p>LA · Vegas trip planner</p>
         </div>
-        <button class="ghost" onclick="window.print()">PDF</button>
       </div>
+      <button class="icon-btn" id="exportBtn" type="button" title="인쇄 / 저장">⤓</button>
     </header>
 
-    <section class="hero" id="home">
-      <div class="hero-img" id="heroImg">
-        <div class="hero-copy">
-          <div class="date-pill">📅 9/25 금 → 10/5 일</div>
-          <h2 id="heroTitle">LA → Vegas → LA</h2>
-          <p id="heroDesc">Sphere는 필수 일정으로 고정. NBA/MLB는 현재 확정 가능한 일정 기준으로 체크 슬롯을 넣었다.</p>
+    <section class="hero">
+      <div class="hero-media" id="heroMedia"></div>
+      <div class="hero-content">
+        <div class="eyebrow">미국 여행 대시보드</div>
+        <h2 id="heroTitle">한 화면에서 여행 준비를 끝내자</h2>
+        <p id="heroDesc">아직 미정인 항목은 빈 슬롯으로 두고, 나중에 값만 넣으면 바로 업데이트되도록 구성했어요.</p>
+        <div class="hero-actions">
+          <button class="primary-btn" data-jump="#overview">전체 보기</button>
+          <button class="secondary-btn" data-jump="#scheduleSection">일정 보기</button>
         </div>
       </div>
     </section>
 
-    <section class="quick-actions">
-      <a class="qa" href="#must"><b>⭐</b><span>필수 일정</span></a>
-      <a class="qa" href="#mapsec"><b>🗺️</b><span>지도</span></a>
-      <a class="qa" href="#schedule"><b>📅</b><span>일정</span></a>
-      <a class="qa" href="#check"><b>✅</b><span>체크</span></a>
-      <a class="qa" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=LAX&destination=LAX&waypoints=Santa+Monica+Pier%7CGriffith+Observatory%7CUniversal+Studios+Hollywood%7CLas+Vegas+Strip%7CSphere+Las+Vegas%7CCitadel+Outlets%7CVenice+Beach"><b>🚗</b><span>전체 경로</span></a>
+    <section class="stats-grid" id="overview">
+      <article class="stat-card">
+        <span>확정 일정</span>
+        <strong id="confirmedCount">0</strong>
+        <small id="confirmedLabel">아직 비어 있음</small>
+      </article>
+      <article class="stat-card">
+        <span>미정 항목</span>
+        <strong id="pendingCount">0</strong>
+        <small>항공 / 숙소 / 렌트카</small>
+      </article>
+      <article class="stat-card">
+        <span>체크 상태</span>
+        <strong id="checkCount">0%</strong>
+        <small id="checkLabel">저장된 진행률</small>
+      </article>
     </section>
 
-    <section id="must">
-      <div class="section-title">
-        <h2>필수로 넣은 일정</h2>
-        <span>예약 우선순위</span>
-      </div>
-      <div class="must-grid">
-        <article class="must">
-          <div class="must-icon">🟠</div>
-          <div>
-            <h3>Sphere · The Wizard of Oz</h3>
-            <p>9/29 화요일 17:00 공연을 베가스 핵심 일정으로 고정. 늦은 입장 불가 안내가 있으니 여유 있게 도착.</p>
-            <div class="btns">
-              <a class="btn primary" target="_blank" href="https://www.ticketmaster.com/the-wizard-of-oz-at-sphere-las-vegas-nevada-09-29-2026/event/170064311316EF6B">티켓 보기</a>
-              <a class="btn orange" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Sphere+Las+Vegas">지도</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="must">
-          <div class="must-icon">⚾</div>
-          <div>
-            <h3>NBA/MLB 체험 슬롯</h3>
-            <p>현재 일정상 LA 체류일에 LA 홈 MLB 확정 경기는 없음. NBA는 2026-27 프리시즌 세부 일정이 아직 확정 전이라, 10/3 토요일 저녁을 스포츠 슬롯으로 비워둠.</p>
-            <div class="btns">
-              <a class="btn blue" target="_blank" href="https://www.nba.com/lakers/schedule">Lakers 일정</a>
-              <a class="btn blue" target="_blank" href="https://www.nba.com/clippers/schedule">Clippers 일정</a>
-              <a class="btn blue" target="_blank" href="https://www.mlb.com/dodgers/schedule">Dodgers 일정</a>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section id="mapsec">
-      <div class="section-title">
-        <h2>동적 지도</h2>
-        <span>일정 탭하면 변경</span>
-      </div>
-      <div class="map-card">
-        <iframe id="map" src="https://maps.google.com/maps?q=Los%20Angeles%20to%20Las%20Vegas&t=&z=7&ie=UTF8&iwloc=&output=embed" loading="lazy"></iframe>
-        <div class="map-info">
-          <b id="mapTitle">전체 여행 경로</b>
-          <p id="mapDesc">아래 일정 카드를 누르면 이 지도와 상단 사진이 해당 장소로 바뀐다.</p>
-          <div class="btns">
-            <a id="mapLink" class="btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=LAX&destination=LAX&waypoints=Santa+Monica+Pier%7CGriffith+Observatory%7CUniversal+Studios+Hollywood%7CLas+Vegas+Strip%7CSphere+Las+Vegas%7CCitadel+Outlets%7CVenice+Beach">구글맵 열기</a>
-          </div>
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>빠른 이동</h3>
+          <p>일정이 먼저 보이도록 정리</p>
         </div>
       </div>
+      <div class="tab-row" role="tablist" aria-label="Planner sections">
+        <button class="tab active" data-tab="schedule" role="tab" aria-selected="true">일정</button>
+        <button class="tab" data-tab="flight" role="tab">항공</button>
+        <button class="tab" data-tab="stay" role="tab">숙소</button>
+        <button class="tab" data-tab="car" role="tab">렌트카</button>
+      </div>
     </section>
 
-    <section id="schedule">
-      <div class="section-title">
-        <h2>일정표</h2>
-        <span>모바일 카드형</span>
+    <section class="panel hidden-section" data-section="trip" id="planner">
+      <div class="panel-head">
+        <div>
+          <h3>여행 핵심 요약</h3>
+          <p>일정 중심 카드</p>
+        </div>
       </div>
-      <div class="filters">
-        <button class="filter active" data-filter="all">전체</button>
-        <button class="filter" data-filter="la">LA</button>
-        <button class="filter" data-filter="vegas">Vegas</button>
-        <button class="filter" data-filter="must">필수</button>
-        <button class="filter" data-filter="move">이동</button>
-      </div>
-      <div class="day-list" id="dayList"></div>
+      <div class="content-grid" id="sectionTrip"></div>
     </section>
 
-    <section id="check">
-      <div class="section-title">
-        <h2>예약 체크리스트</h2>
-        <span>브라우저 저장</span>
+    <section class="panel open" data-section="schedule" id="scheduleSection">
+      <div class="panel-head">
+        <div>
+          <h3>요일별 상세 일정</h3>
+          <p>가장 먼저 확인하는 메인 화면</p>
+        </div>
+      </div>
+      <div class="filters" id="scheduleFilters"></div>
+      <div class="schedule-list" id="scheduleList"></div>
+    </section>
+
+    <section class="panel hidden-section" data-section="flight" id="flightSection">
+      <div class="panel-head">
+        <div>
+          <h3>항공</h3>
+          <p>아직 미정이면 빈 카드로 두고 나중에 채우면 됩니다</p>
+        </div>
+      </div>
+      <div class="entity-grid" id="sectionFlight"></div>
+    </section>
+
+    <section class="panel hidden-section" data-section="stay" id="staySection">
+      <div class="panel-head">
+        <div>
+          <h3>숙소</h3>
+          <p>구간별 숙소를 나눠 적기 좋은 형태</p>
+        </div>
+      </div>
+      <div class="entity-grid" id="sectionStay"></div>
+    </section>
+
+    <section class="panel hidden-section" data-section="car" id="carSection">
+      <div class="panel-head">
+        <div>
+          <h3>렌트카</h3>
+          <p>보험, 픽업, 반납 메모를 따로 정리</p>
+        </div>
+      </div>
+      <div class="entity-grid" id="sectionCar"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>여행 체크리스트</h3>
+          <p>브라우저에 자동 저장</p>
+        </div>
       </div>
       <div class="checklist" id="checklist"></div>
-      <p class="source-note">
-        스포츠 일정은 변동 가능성이 크다. 현재 확인 기준으로 Dodgers는 9/25~9/27 원정, Angels도 9/25~9/27 원정이며, NBA 프리시즌 LA 홈 일정은 아직 확정 전이다.
-      </p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>메모</h3>
+          <p>나중에 정보가 생기면 이곳부터 채우면 편해요</p>
+        </div>
+      </div>
+      <textarea id="notes" class="notes" placeholder="예: 항공편 확정되면 출발/도착 시간, 숙소 이름, 렌트카 픽업 위치를 적어두기"></textarea>
     </section>
   </main>
 
   <nav class="bottom-nav">
-    <div class="bottom-inner">
-      <a class="nav-btn" href="#home"><span>🏠</span>홈</a>
-      <a class="nav-btn" href="#must"><span>⭐</span>필수</a>
-      <a class="nav-btn" href="#mapsec"><span>🗺️</span>지도</a>
-      <a class="nav-btn" href="#schedule"><span>📅</span>일정</a>
-    </div>
+    <button class="nav-btn active" data-jump="#overview">홈</button>
+    <button class="nav-btn" data-jump="#scheduleSection">일정</button>
+    <button class="nav-btn" data-jump="#sectionFlight">항공</button>
+    <button class="nav-btn" data-jump="#sectionCar">렌트카</button>
   </nav>
 
-  <div class="modal" id="modal">
+  <div class="modal" id="detailModal" aria-hidden="true">
     <div class="sheet">
-      <div class="sheet-img" id="sheetImg">
-        <button class="close" onclick="closeSheet()">×</button>
-        <div class="sheet-title">
-          <h2 id="sheetTitle"></h2>
-          <p id="sheetDesc"></p>
-        </div>
-      </div>
+      <div class="sheet-handle"></div>
+      <button class="close-btn" id="closeModal" type="button">×</button>
+      <div class="sheet-hero" id="modalHero"></div>
       <div class="sheet-body">
-        <div class="timeline" id="sheetTimeline"></div>
-        <div class="tip" id="sheetTip"></div>
-        <div class="btns">
-          <a id="sheetMap" class="btn primary" target="_blank">구글맵 경로</a>
-          <a id="sheetSearch" class="btn blue" target="_blank">주변 검색</a>
-        </div>
+        <div class="sheet-kicker" id="modalKicker"></div>
+        <h3 id="modalTitle"></h3>
+        <p id="modalDesc"></p>
+        <div class="meta-grid" id="modalMeta"></div>
+        <div class="action-row" id="modalActions"></div>
       </div>
     </div>
   </div>
 
-<script>
-const DATA = [
-  {
-    day:1, date:"9/25", week:"금", type:"la", city:"LA", title:"LA 도착 · 산타모니카 적응",
-    desc:"첫날은 시차 적응. 해변 산책과 가벼운 저녁만.",
-    img:"https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1000&q=85",
-    q:"Santa Monica Pier", map:"https://www.google.com/maps/dir/?api=1&destination=Santa+Monica+Pier",
-    search:"https://www.google.com/maps/search/restaurants+near+Santa+Monica+Pier",
-    tip:"첫날은 컨디션 관리가 핵심. 야간 장거리 운전은 비추천.",
-    schedule:[["도착 후","LAX → 체크인","짐 정리 후 휴식"],["저녁","Santa Monica Pier","가벼운 산책과 식사"],["밤","시차 적응","일찍 쉬기"]]
-  },
-  {
-    day:2, date:"9/26", week:"토", type:"la", city:"LA", title:"할리우드 · 베벌리힐즈 · 그리피스",
-    desc:"LA 대표 관광 압축. 저녁은 그리피스 야경.",
-    img:"https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=1000&q=85",
-    q:"Griffith Observatory", map:"https://www.google.com/maps/dir/?api=1&origin=Hollywood+Walk+of+Fame&destination=Griffith+Observatory&waypoints=Rodeo+Drive",
-    search:"https://www.google.com/maps/search/cafes+near+Rodeo+Drive",
-    tip:"주말 그리피스는 혼잡하므로 일몰 1시간 전 도착 추천.",
-    schedule:[["오전","Hollywood Walk of Fame","사진 위주로 짧게"],["오후","Beverly Hills / Rodeo Drive","거리 구경"],["저녁","Griffith Observatory","야경"]]
-  },
-  {
-    day:3, date:"9/27", week:"일", type:"la", city:"LA", title:"Universal Studios Hollywood",
-    desc:"미국식 체험형 관광 핵심. 하루 통째로 배정.",
-    img:"https://images.unsplash.com/photo-1569135219920-00898b584df4?auto=format&fit=crop&w=1000&q=85",
-    q:"Universal Studios Hollywood", map:"https://www.google.com/maps/dir/?api=1&destination=Universal+Studios+Hollywood",
-    search:"https://www.google.com/maps/search/Universal+CityWalk+Hollywood+restaurants",
-    tip:"운영시간은 날짜별로 다르므로 공식 캘린더 확인 후 티켓 예약.",
-    schedule:[["오전","오픈런","인기 어트랙션 우선"],["오후","스튜디오 투어 / 해리포터 존","대기시간 보며 이동"],["저녁","CityWalk","식사 후 복귀"]]
-  },
-  {
-    day:4, date:"9/28", week:"월", type:"vegas move", city:"Vegas", title:"LA → Las Vegas 이동",
-    desc:"오전 출발, 오후 체크인, 밤에는 스트립 야경.",
-    img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
-    q:"Los Angeles to Las Vegas Strip", map:"https://www.google.com/maps/dir/?api=1&origin=Los+Angeles,+CA&destination=Las+Vegas+Strip",
-    search:"https://www.google.com/maps/search/Las+Vegas+Strip+restaurants",
-    tip:"이동일에는 욕심내지 말고 스트립 야경만 가볍게.",
-    schedule:[["오전","LA 출발","4~5시간 운전 예상"],["오후","Las Vegas 체크인","휴식"],["저녁","Strip / Bellagio Fountains","첫날 야경"]]
-  },
-  {
-    day:5, date:"9/29", week:"화", type:"vegas must", city:"Vegas", title:"Sphere 필수 · The Wizard of Oz",
-    desc:"이번 여행의 베가스 핵심 체험. 17:00 공연 기준으로 일정 고정.",
-    img:"https://images.unsplash.com/photo-1695668768015-418077d78d3e?auto=format&fit=crop&w=1000&q=85",
-    q:"Sphere Las Vegas", map:"https://www.google.com/maps/dir/?api=1&destination=Sphere+Las+Vegas",
-    search:"https://www.google.com/maps/search/restaurants+near+Sphere+Las+Vegas",
-    tip:"Ticketmaster 안내상 공연 시간 시작 후 늦은 입장이 불가하다. 문은 공연 45분 전 오픈 안내.",
-    schedule:[["오전","늦잠 / 브런치","전날 이동 피로 회복"],["오후","Bellagio · Venetian","가벼운 호텔 투어"],["17:00","Sphere · The Wizard of Oz","필수 예약 일정"],["저녁","가벼운 식사 / 스트립","공연 후 여유"]]
-  },
-  {
-    day:6, date:"9/30", week:"수", type:"vegas", city:"Vegas", title:"그랜드캐년 or 베가스 여유일",
-    desc:"체력에 따라 선택. 강행하면 그랜드캐년, 쉬려면 쇼핑·수영장.",
-    img:"https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=1000&q=85",
-    q:"Grand Canyon West", map:"https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Grand+Canyon+West",
-    search:"https://www.google.com/maps/search/Las+Vegas+North+Premium+Outlets",
-    tip:"그랜드캐년은 이동 시간이 길다. 전날 과음 금지.",
-    schedule:[["옵션 A","Grand Canyon 투어","사전 예약 권장"],["옵션 B","수영장 · 쇼핑 · 카지노","휴식형 일정"],["밤","마지막 베가스 야경","High Roller / Sphere 외관"]]
-  },
-  {
-    day:7, date:"10/1", week:"목", type:"la move", city:"LA", title:"Las Vegas → LA 복귀",
-    desc:"복귀 이동일. 저녁은 가볍게.",
-    img:"https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85",
-    q:"Las Vegas to Los Angeles", map:"https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Los+Angeles,+CA",
-    search:"https://www.google.com/maps/search/Koreatown+Los+Angeles+restaurants",
-    tip:"복귀일은 피로가 크므로 일정 최소화.",
-    schedule:[["오전","Vegas 체크아웃","점심 전 출발"],["오후","LA 도착","짐 정리"],["저녁","가벼운 식사","한인타운 후보"]]
-  },
-  {
-    day:8, date:"10/2", week:"금", type:"la", city:"LA", title:"Citadel Outlets 쇼핑",
-    desc:"후반부 첫 풀데이. 쇼핑 중심.",
-    img:"https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=1000&q=85",
-    q:"Citadel Outlets", map:"https://www.google.com/maps/dir/?api=1&destination=Citadel+Outlets",
-    search:"https://www.google.com/maps/search/restaurants+near+Citadel+Outlets",
-    tip:"영업시간 확인 후 방문. 렌터카 있을 때 가기 좋음.",
-    schedule:[["오전","느긋한 출발","전날 이동 피로 고려"],["오후","Citadel Outlets","쇼핑과 식사"],["저녁","숙소 복귀","구매품 정리"]]
-  },
-  {
-    day:9, date:"10/3", week:"토", type:"la must", city:"LA", title:"스포츠 슬롯 · NBA/MLB 대기",
-    desc:"NBA 프리시즌 또는 MLB 포스트시즌 가능성 확인용으로 저녁을 비워둠.",
-    img:"https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=1000&q=85",
-    q:"Crypto.com Arena Los Angeles", map:"https://www.google.com/maps/dir/?api=1&destination=Crypto.com+Arena+Los+Angeles",
-    search:"https://www.google.com/maps/search/Dodger+Stadium+or+Crypto.com+Arena",
-    tip:"현재 확정 가능한 LA 홈 MLB/NBA 일정은 없다. 여행 가까워지면 Lakers/Clippers 프리시즌 또는 Dodgers 포스트시즌 여부 확인.",
-    schedule:[["오전","Venice Canals / Beach","산책"],["오후","Abbot Kinney / Santa Monica","카페와 쇼핑"],["저녁","스포츠 슬롯","NBA/MLB 일정 뜨면 교체"]]
-  },
-  {
-    day:10, date:"10/4~10/5", week:"일", type:"la move", city:"LA", title:"마무리 · LAX 이동",
-    desc:"마지막 날은 공항 이동 리스크 관리.",
-    img:"https://images.unsplash.com/photo-1583404314681-407e4f3757f6?auto=format&fit=crop&w=1000&q=85",
-    q:"LAX Airport", map:"https://www.google.com/maps/dir/?api=1&destination=LAX",
-    search:"https://www.google.com/maps/search/LAX+car+rental+return",
-    tip:"국제선은 렌터카 반납과 공항 이동을 넉넉하게.",
-    schedule:[["오전","체크아웃 / 짐 정리","쇼핑 물품 무게 확인"],["출국 전","렌터카 반납 → LAX","여유 도착"]]
-  }
-];
-
-const checks = [
-  "Sphere 9/29 17:00 티켓 확인",
-  "유니버설 운영시간 및 티켓 확인",
-  "NBA Lakers/Clippers 프리시즌 일정 업데이트 확인",
-  "MLB Dodgers 포스트시즌 또는 LA 홈 경기 여부 확인",
-  "그랜드캐년 투어 여부 결정",
-  "렌터카 예약 및 보험 확인",
-  "ESTA / 여권 만료일 확인",
-  "숙소 3구간 예약"
-];
-
-function embed(q,z=12){return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&t=&z=${z}&ie=UTF8&iwloc=&output=embed`}
-
-function render(filter="all"){
-  const list=document.getElementById("dayList");
-  list.innerHTML="";
-  DATA.filter(d=>filter==="all" || d.type.includes(filter)).forEach(d=>{
-    const el=document.createElement("article");
-    el.className="day";
-    el.innerHTML=`
-      <div class="day-img" style="background-image:url('${d.img}')">
-        <div class="day-no">${String(d.day).padStart(2,"0")}</div>
-        <div class="badge-row">
-          <span class="badge">${d.date}</span>
-          <span class="badge">${d.city}</span>
-          ${d.type.includes("must")?'<span class="badge">필수</span>':""}
-        </div>
-      </div>
-      <div class="day-body">
-        <h3>${d.title}</h3>
-        <p class="day-desc">${d.desc}</p>
-        ${d.type.includes("must")?'<div class="sports-alert"><b>필수 확인</b><p>예약/일정 확정이 필요한 핵심 일정이다.</p></div>':""}
-        <div class="timeline">
-          ${d.schedule.map(s=>`<div class="slot"><div class="slot-time">${s[0]}</div><div><strong>${s[1]}</strong><span>${s[2]}</span></div></div>`).join("")}
-        </div>
-        <div class="btns">
-          <a class="btn primary" href="${d.map}" target="_blank" onclick="event.stopPropagation()">지도 경로</a>
-          <button class="btn" onclick="event.stopPropagation(); openSheet(${d.day})">상세</button>
-        </div>
-      </div>`;
-    el.addEventListener("click",()=>selectDay(d.day));
-    list.appendChild(el);
-  });
-}
-
-function selectDay(day){
-  const d=DATA.find(x=>x.day===day);
-  document.getElementById("map").src=embed(d.q,d.type.includes("move")?8:13);
-  document.getElementById("mapTitle").textContent=`DAY ${d.day} · ${d.title}`;
-  document.getElementById("mapDesc").textContent=d.desc;
-  document.getElementById("mapLink").href=d.map;
-  document.getElementById("heroImg").style.backgroundImage=`url('${d.img}')`;
-  document.getElementById("heroTitle").textContent=d.title;
-  document.getElementById("heroDesc").textContent=d.desc;
-  document.getElementById("mapsec").scrollIntoView({behavior:"smooth", block:"start"});
-}
-
-function openSheet(day){
-  const d=DATA.find(x=>x.day===day);
-  document.getElementById("sheetImg").style.backgroundImage=`url('${d.img}')`;
-  document.getElementById("sheetTitle").textContent=`DAY ${d.day} · ${d.title}`;
-  document.getElementById("sheetDesc").textContent=d.desc;
-  document.getElementById("sheetTimeline").innerHTML=d.schedule.map(s=>`<div class="slot"><div class="slot-time">${s[0]}</div><div><strong>${s[1]}</strong><span>${s[2]}</span></div></div>`).join("");
-  document.getElementById("sheetTip").textContent=d.tip;
-  document.getElementById("sheetMap").href=d.map;
-  document.getElementById("sheetSearch").href=d.search;
-  document.getElementById("modal").classList.add("open");
-  selectDay(day);
-}
-
-function closeSheet(){document.getElementById("modal").classList.remove("open")}
-document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeSheet()});
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
-
-document.querySelectorAll(".filter").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    render(btn.dataset.filter);
-  });
-});
-
-function renderChecks(){
-  const el=document.getElementById("checklist");
-  el.innerHTML=checks.map((c,i)=>`<label class="check"><input type="checkbox" ${localStorage.getItem("mtrip"+i)==="1"?"checked":""} data-i="${i}"><span>${c}</span></label>`).join("");
-  el.querySelectorAll("input").forEach(input=>{
-    input.addEventListener("change",()=>localStorage.setItem("mtrip"+input.dataset.i,input.checked?"1":"0"));
-  });
-}
-
-render();
-renderChecks();
-</script>
+  <script src="./app.js"></script>
 </body>
 </html>
