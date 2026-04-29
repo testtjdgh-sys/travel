@@ -93,16 +93,19 @@ const checks = [
   ["항공편 확정", "출발/도착 시간 기록"],
   ["숙소 1차 확보", "LA / Vegas 숙소 분리"],
   ["렌트카 견적 비교", "보험 포함 총액 확인"],
-  ["총예산 범위 설정", "대충이라도 상한선 정하기"],
   ["핵심 일정 재확인", "Sphere / Universal 우선"],
   ["여권 / ESTA 확인", "만료일 체크"],
 ];
 
 const hero = {
-  title: "한 화면에서 여행 준비를 끝내자",
+  title: "LA · Vegas 일정표",
   desc: "요일별 일정을 먼저 보여주고, 항공·숙소·렌트카는 바로 참고할 수 있게 붙여 두었어요.",
   image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1400&q=85",
 };
+
+function mapsSearchUrl(query) {
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
 
 const scheduleData = [
   {
@@ -211,6 +214,7 @@ function makeCard(item, kind = "entity") {
 
 function renderTrips() {
   const container = document.getElementById("sectionTrip");
+  if (!container) return;
   container.innerHTML = "";
   tripSections.forEach((item, index) => {
     const card = el("article", "card");
@@ -247,7 +251,9 @@ function renderSchedule(filter = "all") {
   scheduleData.filter(item => filter === "all" || item.type.includes(filter)).forEach(item => {
     const card = el("article", "day-card");
     card.innerHTML = `
-      <div class="day-banner" style="background-image:linear-gradient(180deg, rgba(3,8,20,.10), rgba(3,8,20,.72)), url('${item.img}')">
+      <div class="day-banner">
+        <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><circle cx=\"950\" cy=\"180\" r=\"160\" fill=\"#1f2a48\"/><circle cx=\"220\" cy=\"560\" r=\"260\" fill=\"#18223d\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">
+        <div class="day-overlay"></div>
         <div class="day-label">${String(item.day).padStart(2, "0")}</div>
         <div class="day-tags">
           <span class="day-tag">${item.date}</span>
@@ -260,9 +266,10 @@ function renderSchedule(filter = "all") {
         <h4>${item.title}</h4>
         <p>${item.desc}</p>
         <div class="timeline">
-          ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><strong>${slot[1]}</strong><span>${slot[2]}</span></div></div>`).join("")}
+          ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer"><strong>${slot[1]}</strong></a><span>${slot[2]}</span></div></div>`).join("")}
         </div>
         <div class="day-actions">
+          <a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵</a>
           <button class="small-btn" type="button" data-open="${item.day}">상세 열기</button>
         </div>
       </div>
@@ -274,18 +281,10 @@ function renderSchedule(filter = "all") {
 
 function renderEntityList(containerId, items, kind = "entity") {
   const container = document.getElementById(containerId);
+  if (!container) return;
   container.innerHTML = "";
   items.forEach((item) => {
-    const card = el("article", kind === "entity" ? "entity" : "budget-card");
-    if (kind === "budget") {
-      card.innerHTML = `
-        <span>${item.label}</span>
-        <div class="value">${item.amount}</div>
-        <div class="sub">${item.sub}</div>
-      `;
-      container.appendChild(card);
-      return;
-    }
+    const card = el("article", "entity");
     card.innerHTML = `
       <h4>${item.title}</h4>
       <p>${item.desc}</p>
@@ -335,8 +334,8 @@ function updateStats() {
 
   const pending = 3;
   document.getElementById("pendingCount").textContent = String(pending);
-  document.getElementById("confirmedCount").textContent = "2";
-  document.getElementById("confirmedLabel").textContent = "현재 확정된 핵심 카드";
+  document.getElementById("confirmedCount").textContent = String(scheduleData.length);
+  document.getElementById("confirmedLabel").textContent = "요일별 일정 카드";
 }
 
 function renderNotes() {
@@ -349,7 +348,7 @@ function openModal(index) {
   const item = tripSections[index];
   document.getElementById("detailModal").classList.add("open");
   document.getElementById("detailModal").setAttribute("aria-hidden", "false");
-  document.getElementById("modalHero").style.backgroundImage = `linear-gradient(180deg, rgba(3,8,20,.10), rgba(3,8,20,.78)), url('${item.hero}')`;
+  document.getElementById("modalHero").innerHTML = `<img src="${item.hero}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
   document.getElementById("modalKicker").textContent = item.status;
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.desc;
@@ -366,12 +365,12 @@ function openModal(index) {
 function openScheduleModal(item) {
   document.getElementById("detailModal").classList.add("open");
   document.getElementById("detailModal").setAttribute("aria-hidden", "false");
-  document.getElementById("modalHero").style.backgroundImage = `linear-gradient(180deg, rgba(3,8,20,.10), rgba(3,8,20,.78)), url('${item.img}')`;
+  document.getElementById("modalHero").innerHTML = `<img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width="1200" height="800" fill=\"#101423\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
   document.getElementById("modalKicker").textContent = `${item.date} · ${item.week} · ${item.city}`;
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.tip;
-  document.getElementById("modalMeta").innerHTML = item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong>${slot[1]}<br>${slot[2]}</strong></div>`).join("");
-  document.getElementById("modalActions").innerHTML = `<button class="small-btn" type="button" id="closeFromSchedule">닫기</button>`;
+  document.getElementById("modalMeta").innerHTML = item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer">${slot[1]}</a><br>${slot[2]}</strong></div>`).join("");
+  document.getElementById("modalActions").innerHTML = `<a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵 열기</a><button class="small-btn" type="button" id="closeFromSchedule">닫기</button>`;
   document.getElementById("closeFromSchedule").addEventListener("click", closeModal);
 }
 
@@ -385,34 +384,29 @@ function switchSection(name) {
     section.classList.toggle("open", section.dataset.section === name);
   });
   document.querySelectorAll(".tab").forEach(tab => {
-    tab.classList.toggle("active", tab.dataset.tab === name || (name === "trip" && tab.dataset.tab === "trip"));
+    tab.classList.toggle("active", tab.dataset.tab === name);
     tab.setAttribute("aria-selected", tab.dataset.tab === name ? "true" : "false");
+  });
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.tabJump === name);
   });
 }
 
+function jumpToSection(name) {
+  switchSection(name);
+  const target = document.querySelector(`[data-section="${name}"]`);
+  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function bindNavigation() {
-  document.querySelectorAll("[data-jump]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const target = document.querySelector(btn.dataset.jump);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  });
   document.querySelectorAll(".tab").forEach(tab => {
     tab.addEventListener("click", () => {
-      const name = tab.dataset.tab;
-      switchSection(name);
-      if (name !== "trip") {
-        const target = document.querySelector(`[data-section="${name}"]`) || document.getElementById(`${name}Section`);
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else {
-        document.getElementById("planner").scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      jumpToSection(tab.dataset.tab);
     });
   });
-  document.querySelectorAll(".nav-btn").forEach(btn => {
+  document.querySelectorAll("[data-tab-jump]").forEach(btn => {
     btn.addEventListener("click", () => {
-      const target = document.querySelector(btn.dataset.jump);
-      if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      jumpToSection(btn.dataset.tabJump);
     });
   });
   document.getElementById("exportBtn").addEventListener("click", () => window.print());
@@ -428,9 +422,8 @@ function bindNavigation() {
 function init() {
   document.getElementById("heroTitle").textContent = hero.title;
   document.getElementById("heroDesc").textContent = hero.desc;
-  document.getElementById("heroMedia").style.backgroundImage = `linear-gradient(180deg, rgba(3,8,20,.08), rgba(3,8,20,.72)), url('${hero.image}')`;
+  document.getElementById("heroMedia").innerHTML = `<img src="${hero.image}" alt="travel hero" loading="eager" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1400 900\"><rect width=\"1400\" height=\"900\" fill=\"#101423\"/><circle cx=\"1100\" cy=\"160\" r=\"180\" fill=\"#1f2a48\"/><circle cx=\"250\" cy=\"680\" r=\"300\" fill=\"#18223d\"/><text x=\"80\" y=\"800\" fill=\"#dce7ff\" font-size=\"64\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
 
-  renderTrips();
   renderSchedule();
   renderEntityList("sectionFlight", flight);
   renderEntityList("sectionStay", stay);
@@ -438,8 +431,8 @@ function init() {
   renderChecks();
   renderNotes();
   updateStats();
-  switchSection("schedule");
   bindNavigation();
+  switchSection("schedule");
 }
 
 init();

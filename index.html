@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Travel HQ</title>
-  <meta name="description" content="미국 여행 계획을 한 화면에서 관리하는 모바일 중심 대시보드" />
+  <meta name="description" content="요일별 미국 여행 일정을 모바일에서 빠르게 확인하는 플래너" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -26,41 +26,17 @@
     <section class="hero">
       <div class="hero-media" id="heroMedia"></div>
       <div class="hero-content">
-        <div class="eyebrow">미국 여행 대시보드</div>
-        <h2 id="heroTitle">한 화면에서 여행 준비를 끝내자</h2>
-        <p id="heroDesc">아직 미정인 항목은 빈 슬롯으로 두고, 나중에 값만 넣으면 바로 업데이트되도록 구성했어요.</p>
+        <div class="eyebrow">9/25 - 10/5</div>
+        <h2 id="heroTitle">LA · Vegas 일정표</h2>
+        <p id="heroDesc">요일별 일정이 메인이고, 항공·숙소·렌트카는 바로 확인하는 보조 정보로 정리했어요.</p>
         <div class="hero-actions">
-          <button class="primary-btn" data-jump="#overview">전체 보기</button>
-          <button class="secondary-btn" data-jump="#scheduleSection">일정 보기</button>
+          <button class="primary-btn" data-tab-jump="schedule">일정</button>
+          <button class="secondary-btn" data-tab-jump="flight">항공</button>
         </div>
       </div>
     </section>
 
-    <section class="stats-grid" id="overview">
-      <article class="stat-card">
-        <span>확정 일정</span>
-        <strong id="confirmedCount">0</strong>
-        <small id="confirmedLabel">아직 비어 있음</small>
-      </article>
-      <article class="stat-card">
-        <span>미정 항목</span>
-        <strong id="pendingCount">0</strong>
-        <small>항공 / 숙소 / 렌트카</small>
-      </article>
-      <article class="stat-card">
-        <span>체크 상태</span>
-        <strong id="checkCount">0%</strong>
-        <small id="checkLabel">저장된 진행률</small>
-      </article>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <div>
-          <h3>빠른 이동</h3>
-          <p>일정이 먼저 보이도록 정리</p>
-        </div>
-      </div>
+    <section class="quick-switch">
       <div class="tab-row" role="tablist" aria-label="Planner sections">
         <button class="tab active" data-tab="schedule" role="tab" aria-selected="true">일정</button>
         <button class="tab" data-tab="flight" role="tab">항공</button>
@@ -69,21 +45,11 @@
       </div>
     </section>
 
-    <section class="panel hidden-section" data-section="trip" id="planner">
-      <div class="panel-head">
-        <div>
-          <h3>여행 핵심 요약</h3>
-          <p>일정 중심 카드</p>
-        </div>
-      </div>
-      <div class="content-grid" id="sectionTrip"></div>
-    </section>
-
     <section class="panel open" data-section="schedule" id="scheduleSection">
       <div class="panel-head">
         <div>
-          <h3>요일별 상세 일정</h3>
-          <p>가장 먼저 확인하는 메인 화면</p>
+          <h3>요일별 일정</h3>
+          <p>장소를 누르면 Google Maps로 열림</p>
         </div>
       </div>
       <div class="filters" id="scheduleFilters"></div>
@@ -139,13 +105,31 @@
       </div>
       <textarea id="notes" class="notes" placeholder="예: 항공편 확정되면 출발/도착 시간, 숙소 이름, 렌트카 픽업 위치를 적어두기"></textarea>
     </section>
+
+    <section class="stats-grid" id="overview">
+      <article class="stat-card">
+        <span>확정 일정</span>
+        <strong id="confirmedCount">0</strong>
+        <small id="confirmedLabel">아직 비어 있음</small>
+      </article>
+      <article class="stat-card">
+        <span>미정 항목</span>
+        <strong id="pendingCount">0</strong>
+        <small>항공 / 숙소 / 렌트카</small>
+      </article>
+      <article class="stat-card">
+        <span>체크 상태</span>
+        <strong id="checkCount">0%</strong>
+        <small id="checkLabel">저장된 진행률</small>
+      </article>
+    </section>
   </main>
 
   <nav class="bottom-nav">
-    <button class="nav-btn active" data-jump="#overview">홈</button>
-    <button class="nav-btn" data-jump="#scheduleSection">일정</button>
-    <button class="nav-btn" data-jump="#sectionFlight">항공</button>
-    <button class="nav-btn" data-jump="#sectionCar">렌트카</button>
+    <button class="nav-btn active" data-tab-jump="schedule">일정</button>
+    <button class="nav-btn" data-tab-jump="flight">항공</button>
+    <button class="nav-btn" data-tab-jump="stay">숙소</button>
+    <button class="nav-btn" data-tab-jump="car">렌트카</button>
   </nav>
 
   <div class="modal" id="detailModal" aria-hidden="true">
