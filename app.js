@@ -110,6 +110,10 @@ function mapsSearchUrl(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
+function mapsEmbedUrl(query) {
+  return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=12&output=embed`;
+}
+
 const locationLabels = {
   west: "LA 서쪽",
   north: "LA 북쪽",
@@ -128,6 +132,7 @@ const scheduleData = [
     area: "LA 서쪽 해안 · 산타모니카",
     stayTime: "LA 임시 숙소 기준 30-50분",
     position: "west",
+    mapQuery: "Santa Monica Pier",
     tip: "첫날은 컨디션 관리가 핵심. 야간 장거리 운전은 비추천.",
     schedule: [["도착 후", "LAX → 체크인", "입국, 렌터카/이동, 짐 정리"], ["저녁", "Santa Monica Pier", "해변 산책, 가벼운 식사, 노을 보기"], ["밤", "시차 적응", "근처 마트 들른 뒤 일찍 쉬기"]],
   },
@@ -138,6 +143,7 @@ const scheduleData = [
     area: "LA 북부/중부 · Hollywood-Beverly-Griffith",
     stayTime: "LA 임시 숙소 기준 각 구간 20-45분",
     position: "north",
+    mapQuery: "Griffith Observatory",
     tip: "주말 그리피스는 혼잡하므로 일몰 1시간 전 도착 추천.",
     schedule: [["오전", "Hollywood Walk of Fame", "사진 포인트 위주로 짧게"], ["점심", "Beverly Hills", "이동 중 식사 후보 확인"], ["오후", "Rodeo Drive", "거리 구경, 카페 쉬는 시간"], ["저녁", "Griffith Observatory", "일몰 전 도착, 야경 보고 복귀"]],
   },
@@ -148,6 +154,7 @@ const scheduleData = [
     area: "LA 북쪽 · Universal City",
     stayTime: "LA 임시 숙소 기준 25-55분",
     position: "north",
+    mapQuery: "Universal Studios Hollywood",
     tip: "운영시간은 날짜별로 다르므로 공식 캘린더 확인 후 티켓 예약.",
     schedule: [["오전", "오픈런", "입장 직후 인기 어트랙션 우선"], ["점심", "파크 내부 식사", "대기시간 보며 가까운 곳 선택"], ["오후", "스튜디오 투어 / 해리포터 존", "앱 대기시간 기준으로 동선 조정"], ["저녁", "CityWalk", "식사 후 여유 있게 복귀"]],
   },
@@ -158,6 +165,7 @@ const scheduleData = [
     area: "LA에서 북동쪽 · Mojave 경유",
     stayTime: "LA 출발 기준 4-5시간 운전",
     position: "northeast",
+    mapQuery: "Los Angeles to Las Vegas",
     tip: "이동일에는 욕심내지 말고 스트립 야경만 가볍게.",
     schedule: [["오전", "LA 출발", "간식/물 준비 후 고속도로 이동"], ["점심", "중간 휴게", "Barstow 근처 휴식 후보"], ["오후", "Las Vegas 체크인", "주차, 짐 정리, 휴식"], ["저녁", "Strip / Bellagio Fountains", "첫날 야경만 가볍게"]],
   },
@@ -168,6 +176,7 @@ const scheduleData = [
     area: "Vegas Strip 동쪽 · Sphere",
     stayTime: "Vegas Strip 숙소 기준 10-25분",
     position: "vegasEast",
+    mapQuery: "Sphere Las Vegas",
     tip: "Ticketmaster 안내상 공연 시간 시작 후 늦은 입장이 불가하다. 문은 공연 45분 전 오픈 안내.",
     schedule: [["오전", "늦잠 / 브런치", "전날 이동 피로 회복"], ["오후", "Bellagio · Venetian", "가벼운 호텔 투어"], ["17:00", "Sphere · The Wizard of Oz", "필수 예약 일정"], ["저녁", "가벼운 식사 / 스트립", "공연 후 여유"]],
   },
@@ -178,6 +187,7 @@ const scheduleData = [
     area: "선택 일정 · Grand Canyon West 또는 Vegas 시내",
     stayTime: "그랜드캐년 선택 시 편도 약 2-2.5시간",
     position: "vegasWest",
+    mapQuery: "Grand Canyon West",
     tip: "그랜드캐년은 이동 시간이 길다. 전날 과음 금지.",
     schedule: [["옵션 A", "Grand Canyon 투어", "사전 예약, 이른 출발 권장"], ["옵션 B", "수영장 · 쇼핑 · 카지노", "체력 회복 중심의 휴식형 일정"], ["저녁", "Vegas 마지막 식사", "예약 가능한 레스토랑 후보 확인"], ["밤", "마지막 베가스 야경", "High Roller / Sphere 외관"]],
   },
@@ -188,6 +198,7 @@ const scheduleData = [
     area: "Vegas에서 남서쪽 · LA 복귀",
     stayTime: "Vegas 출발 기준 4.5-6시간 운전",
     position: "northeast",
+    mapQuery: "Las Vegas to Los Angeles",
     tip: "복귀일은 피로가 크므로 일정 최소화.",
     schedule: [["오전", "Vegas 체크아웃", "점심 전 출발 목표"], ["점심", "중간 휴게", "운전 피로 보며 휴식"], ["오후", "LA 도착", "숙소 체크인, 짐 정리"], ["저녁", "가벼운 식사", "한인타운 후보"]],
   },
@@ -198,6 +209,7 @@ const scheduleData = [
     area: "LA 동쪽 · Commerce",
     stayTime: "LA 임시 숙소 기준 25-50분",
     position: "east",
+    mapQuery: "Citadel Outlets",
     tip: "영업시간 확인 후 방문. 렌터카 있을 때 가기 좋음.",
     schedule: [["오전", "느긋한 출발", "전날 이동 피로 고려"], ["점심", "Citadel Outlets 도착", "식사 후 쇼핑 시작"], ["오후", "Citadel Outlets", "브랜드별 우선순위로 이동"], ["저녁", "숙소 복귀", "구매품 정리, 캐리어 무게 확인"]],
   },
@@ -208,6 +220,7 @@ const scheduleData = [
     area: "LA 서쪽 해안 또는 Downtown 경기장",
     stayTime: "LA 임시 숙소 기준 20-55분",
     position: "west",
+    mapQuery: "Venice Canals Los Angeles",
     tip: "현재 확정 가능한 LA 홈 MLB/NBA 일정은 없다. 여행 가까워지면 Lakers/Clippers 프리시즌 또는 Dodgers 포스트시즌 여부 확인.",
     schedule: [["오전", "Venice Canals / Beach", "산책, 사진, 해변 분위기"], ["점심", "Abbot Kinney", "카페/브런치 후보"], ["오후", "Santa Monica", "쇼핑 또는 해변 산책"], ["저녁", "스포츠 슬롯", "NBA/MLB 일정 뜨면 경기로 교체"]],
   },
@@ -218,6 +231,7 @@ const scheduleData = [
     area: "LA 서쪽 · LAX 공항권",
     stayTime: "LA 임시 숙소 기준 25-70분",
     position: "airport",
+    mapQuery: "LAX Airport",
     tip: "국제선은 렌터카 반납과 공항 이동을 넉넉하게.",
     schedule: [["오전", "체크아웃 / 짐 정리", "쇼핑 물품 무게 확인"], ["점심", "가벼운 식사", "공항 이동 전 부담 없는 식사"], ["출국 전", "렌터카 반납 → LAX", "국제선 기준 넉넉하게 도착"]],
   },
@@ -316,10 +330,7 @@ function createScheduleCard(item) {
         <h4>${item.title}</h4>
         <p>${item.desc}</p>
         <div class="location-card">
-          <div class="mini-map ${item.position || "west"}">
-            <span class="map-base">숙소</span>
-            <span class="map-pin">목적지</span>
-          </div>
+          <iframe class="inline-map" title="${item.title} 위치 지도" src="${mapsEmbedUrl(item.mapQuery || item.title)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           <div class="location-copy">
             <span>대략 위치</span>
             <strong>${locationLabels[item.position] || item.area}</strong>
