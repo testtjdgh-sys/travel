@@ -28,6 +28,7 @@ body{
     var(--bg);
   color:var(--text);
   padding:12px 12px calc(96px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
 }
 
 button,textarea{font:inherit}
@@ -239,20 +240,27 @@ a,button{-webkit-tap-highlight-color:transparent}
   touch-action:pan-y;
 }
 .schedule-list{
-  display:flex;
-  gap:0;
+  display:block;
+  width:100%;
+  max-width:100%;
   padding:2px 0 12px;
-  will-change:transform;
-  transition:transform .32s cubic-bezier(.22,.61,.36,1);
 }
 .day-card{
-  flex:0 0 100%;
+  width:100%;
+  max-width:100%;
   min-width:0;
   overflow:hidden;
   border-radius:20px;
   border:1px solid var(--line);
   background:rgba(17,24,39,.92);
   box-shadow:var(--shadow);
+}
+.day-card-enter{
+  opacity:.72;
+  transform:translateY(6px) scale(.992);
+}
+.day-card{
+  transition:opacity .18s ease, transform .18s ease;
 }
 .day-banner{height:156px;background-size:cover;background-position:center;position:relative}
 .day-banner img{
@@ -495,7 +503,6 @@ a,button{-webkit-tap-highlight-color:transparent}
     max-width:760px;
     margin:0 auto;
   }
-  .day-card{flex-basis:100%}
   .panel[data-section="flight"],.panel[data-section="stay"],.panel[data-section="car"]{
     display:block;
   }
@@ -607,7 +614,6 @@ a,button{-webkit-tap-highlight-color:transparent}
   .carousel-viewport{margin-inline:-1px}
   .schedule-list{padding:2px 0 10px}
   .day-card{
-    flex-basis:100%;
     border-radius:18px;
   }
   .day-banner{height:128px}

@@ -274,43 +274,62 @@ function renderSchedule(filter = "all") {
   const list = document.getElementById("scheduleList");
   list.innerHTML = "";
   visibleSchedule = scheduleData.filter(item => filter === "all" || item.type.includes(filter));
-  visibleSchedule.forEach((item, index) => {
-    const card = el("article", "day-card");
-    card.dataset.index = String(index);
-    card.innerHTML = `
-      <div class="day-banner">
-        <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><circle cx=\"950\" cy=\"180\" r=\"160\" fill=\"#1f2a48\"/><circle cx=\"220\" cy=\"560\" r=\"260\" fill=\"#18223d\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">
-        <div class="day-overlay"></div>
-        <div class="day-label">${String(item.day).padStart(2, "0")}</div>
-        <div class="day-tags">
-          <span class="day-tag">${item.date}</span>
-          <span class="day-tag">${item.week}</span>
-          <span class="day-tag">${item.city}</span>
-          ${item.type.includes("must") ? '<span class="day-tag">필수</span>' : ""}
-        </div>
+  activeDayIndex = Math.min(activeDayIndex, Math.max(visibleSchedule.length - 1, 0));
+  renderActiveScheduleCard(false);
+}
+
+function createScheduleCard(item) {
+  const card = el("article", "day-card");
+  card.innerHTML = `
+    <div class="day-banner">
+      <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><circle cx=\"950\" cy=\"180\" r=\"160\" fill=\"#1f2a48\"/><circle cx=\"220\" cy=\"560\" r=\"260\" fill=\"#18223d\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">
+      <div class="day-overlay"></div>
+      <div class="day-label">${String(item.day).padStart(2, "0")}</div>
+      <div class="day-tags">
+        <span class="day-tag">${item.date}</span>
+        <span class="day-tag">${item.week}</span>
+        <span class="day-tag">${item.city}</span>
+        ${item.type.includes("must") ? '<span class="day-tag">필수</span>' : ""}
       </div>
-      <div class="day-body">
-        <h4>${item.title}</h4>
-        <p>${item.desc}</p>
-        <div class="logistics">
-          <div><span>위치</span><strong>${item.area}</strong></div>
-          <div><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
-        </div>
-        <div class="timeline">
-          ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer"><strong>${slot[1]}</strong></a><span>${slot[2]}</span></div></div>`).join("")}
-        </div>
-        <div class="day-tip">${item.tip}</div>
-        <div class="day-actions">
-          <a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵</a>
-          <button class="small-btn" type="button" data-open="${item.day}">상세 열기</button>
-        </div>
+    </div>
+    <div class="day-body">
+      <h4>${item.title}</h4>
+      <p>${item.desc}</p>
+      <div class="logistics">
+        <div><span>위치</span><strong>${item.area}</strong></div>
+        <div><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
       </div>
-    `;
-    card.querySelector("[data-open]").addEventListener("click", () => openScheduleModal(item));
-    list.appendChild(card);
-  });
+      <div class="timeline">
+        ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer"><strong>${slot[1]}</strong></a><span>${slot[2]}</span></div></div>`).join("")}
+      </div>
+      <div class="day-tip">${item.tip}</div>
+      <div class="day-actions">
+        <a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵</a>
+        <button class="small-btn" type="button" data-open="${item.day}">상세 열기</button>
+      </div>
+    </div>
+  `;
+  card.querySelector("[data-open]").addEventListener("click", () => openScheduleModal(item));
+  return card;
+}
+
+function renderActiveScheduleCard(animate = true) {
+  const list = document.getElementById("scheduleList");
+  if (!list) return;
+  list.innerHTML = "";
+  if (!visibleSchedule.length) {
+    list.innerHTML = `<article class="day-card"><div class="day-body"><h4>일정 없음</h4><p>선택한 필터에 해당하는 일정이 없습니다.</p></div></article>`;
+    updateDayStatus();
+    return;
+  }
+  const item = visibleSchedule[activeDayIndex];
+  const card = createScheduleCard(item);
+  if (animate) {
+    card.classList.add("day-card-enter");
+    requestAnimationFrame(() => card.classList.remove("day-card-enter"));
+  }
+  list.appendChild(card);
   updateDayStatus();
-  requestAnimationFrame(() => scrollToDay(activeDayIndex, false));
 }
 
 function renderEntityList(containerId, items, kind = "entity") {
@@ -424,17 +443,9 @@ function updateDayStatus() {
 }
 
 function scrollToDay(index, animate = true) {
-  const list = document.getElementById("scheduleList");
-  if (!list || !visibleSchedule.length) return;
+  if (!visibleSchedule.length) return;
   activeDayIndex = Math.max(0, Math.min(index, visibleSchedule.length - 1));
-  list.style.transition = animate ? "" : "none";
-  list.style.transform = `translate3d(${-activeDayIndex * 100}%,0,0)`;
-  if (!animate) {
-    requestAnimationFrame(() => {
-      list.style.transition = "";
-    });
-  }
-  updateDayStatus();
+  renderActiveScheduleCard(animate);
 }
 
 function closeModal() {
@@ -472,11 +483,10 @@ function bindNavigation() {
       jumpToSection(btn.dataset.tabJump);
     });
   });
-  document.getElementById("prevDay").addEventListener("click", () => {
-    scrollToDay(activeDayIndex - 1);
-  });
-  document.getElementById("nextDay").addEventListener("click", () => {
-    scrollToDay(activeDayIndex + 1);
+  document.querySelectorAll("[data-carousel]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      scrollToDay(activeDayIndex + (btn.dataset.carousel === "next" ? 1 : -1));
+    });
   });
   const viewport = document.getElementById("scheduleViewport");
   let startX = 0;
