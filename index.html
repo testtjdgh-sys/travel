@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LA · Las Vegas 여행 일정표</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #202432;
+      --muted: #697386;
+      --line: #e7eaf0;
+      --la: #2563eb;
+      --vegas: #f97316;
+      --move: #7c3aed;
+      --soft-la: #eaf2ff;
+      --soft-vegas: #fff2e6;
+      --soft-move: #f1e9ff;
+      --shadow: 0 14px 34px rgba(20, 28, 45, 0.08);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #edf4ff 0, var(--bg) 280px);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 60px;
+    }
+
+    .hero {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(32px, 5vw, 56px);
+      line-height: 1.04;
+      letter-spacing: -0.05em;
+      margin: 0 0 12px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    .quick {
+      display: grid;
+      gap: 10px;
+    }
+
+    .quick-item {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .quick-item b {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .quick-item span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 0;
+      margin-bottom: 10px;
+      background: rgba(246,247,251,0.88);
+      backdrop-filter: blur(10px);
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(20, 28, 45, 0.05);
+    }
+
+    button.active {
+      background: #202432;
+      color: white;
+      border-color: #202432;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .side {
+      position: sticky;
+      top: 74px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin: 0;
+      padding: 18px 18px 12px;
+      font-size: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-body {
+      padding: 16px 18px 18px;
+    }
+
+    iframe {
+      width: 100%;
+      height: 280px;
+      border: 0;
+      display: block;
+      background: #e5e7eb;
+    }
+
+    .route-link {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 12px;
+      background: #202432;
+      color: white;
+      border-radius: 14px;
+      padding: 12px;
+      font-weight: 900;
+    }
+
+    .day {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .day-head {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      min-height: 190px;
+    }
+
+    .photo {
+      background-size: cover;
+      background-position: center;
+      min-height: 190px;
+    }
+
+    .day-title {
+      padding: 22px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      color: #344054;
+      background: #f2f4f7;
+    }
+
+    .tag.la { background: var(--soft-la); color: var(--la); }
+    .tag.vegas { background: var(--soft-vegas); color: #c2410c; }
+    .tag.move { background: var(--soft-move); color: var(--move); }
+
+    .day h2 {
+      margin: 0 0 8px;
+      font-size: 25px;
+      letter-spacing: -0.035em;
+    }
+
+    .day p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .timeline {
+      padding: 0 22px 22px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .slot {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 12px;
+      border: 1px solid #edf0f5;
+      background: #fbfcfe;
+      border-radius: 18px;
+      padding: 13px;
+    }
+
+    .time {
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .slot strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .slot span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 900;
+      background: white;
+    }
+
+    .link-btn.primary {
+      background: #202432;
+      color: white;
+      border-color: #202432;
+    }
+
+    .overview {
+      display: grid;
+      gap: 10px;
+    }
+
+    .overview-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .overview-row:last-child { border-bottom: 0; }
+
+    .overview-row b { font-size: 13px; }
+    .overview-row span { color: var(--muted); font-size: 13px; }
+
+    .memo {
+      background: #fff7ed;
+      border-left: 4px solid var(--vegas);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #7c2d12;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+      color: #344054;
+      font-size: 14px;
+    }
+
+    .checklist label {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 980px) {
+      .hero, .main, .day-head {
+        grid-template-columns: 1fr;
+      }
+      .side {
+        position: static;
+      }
+      .photo {
+        min-height: 170px;
+      }
+    }
+
+    @media print {
+      body { background: white; }
+      .controls, .side, .link-btn, .route-link { display: none; }
+      .wrap { width: 100%; padding: 0; }
+      .hero, .day { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1>LA · Las Vegas<br>여행 일정표</h1>
+        <p>숙소는 나중에 정하는 전제로, 일정과 동선이 한눈에 보이도록 구성한 여행 노트. 장소 링크를 눌러 지도에서 바로 확인할 수 있다.</p>
+      </div>
+      <div class="quick">
+        <div class="quick-item"><b>금·토·일: LA</b><span>도착 적응, 핵심 관광, 유니버설</span></div>
+        <div class="quick-item"><b>월·화·수: Las Vegas</b><span>렌터카 이동, 스트립, 쇼, 그랜드캐년 선택</span></div>
+        <div class="quick-item"><b>목·금·토·일: LA</b><span>복귀, 쇼핑, 해변, 귀국 준비</span></div>
+      </div>
+    </section>
+
+    <nav class="controls">
+      <button class="active" data-filter="all">전체 일정</button>
+      <button data-filter="la">LA만 보기</button>
+      <button data-filter="vegas">라스베가스</button>
+      <button data-filter="move">이동일</button>
+    </nav>
+
+    <section class="main">
+      <div class="days">
+        <article class="day" data-category="la">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 1 · 금</span><span class="tag">컨디션 조절</span></div>
+              <h2>LA 도착 · 산타모니카 가볍게 적응</h2>
+              <p>첫날은 시차 적응이 핵심. 무리하지 말고 해변 산책 정도로 마무리.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Santa+Monica+Pier">지도 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Santa+Monica+Beach">산타모니카</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">도착 후</div><div><strong>LAX → 숙소 체크인</strong><span>숙소 위치 미정. 첫날은 이동 최소화.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>Santa Monica Beach / Pier</strong><span>가볍게 걷고 식사. 피곤하면 바로 휴식.</span></div></div>
+            <div class="slot"><div class="time">밤</div><div><strong>시차 적응</strong><span>다음날부터 본격 일정이므로 일찍 쉬기.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="la">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 2 · 토</span><span class="tag">대표 관광</span></div>
+              <h2>할리우드 · 베벌리힐즈 · 그리피스 야경</h2>
+              <p>LA 대표 관광지를 하루에 압축. 그리피스는 일몰 전 도착 추천.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Hollywood+Walk+of+Fame&destination=Griffith+Observatory&waypoints=Rodeo+Drive">오늘 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Griffith+Observatory">그리피스</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>Hollywood Walk of Fame</strong><span>가볍게 사진 위주. 오래 머물 필요는 적음.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>Beverly Hills / Rodeo Drive</strong><span>거리 구경, 카페, 사진.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>Griffith Observatory</strong><span>야경 핵심 코스. 주말 혼잡 고려.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="la">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1569135219920-00898b584df4?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 3 · 일</span><span class="tag">체험형</span></div>
+              <h2>Universal Studios Hollywood</h2>
+              <p>미국 여행 느낌을 가장 확실히 주는 날. 하루 통째로 비워두는 구성.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Universal+Studios+Hollywood">지도 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.universalstudioshollywood.com/calendar-and-hours/">운영시간 확인</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>오픈 시간 맞춰 입장</strong><span>인기 어트랙션 먼저 처리.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>스튜디오 투어 / 해리포터 존</strong><span>대기시간 확인하며 유동적으로 이동.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>CityWalk 식사</strong><span>체력에 따라 바로 복귀 가능.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="vegas move">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag move">이동</span><span class="tag vegas">Las Vegas</span><span class="tag">DAY 4 · 월</span></div>
+              <h2>LA → Las Vegas 이동 · 스트립 야경</h2>
+              <p>렌터카 이동일. 오전에 출발해서 오후 체크인, 밤에는 스트립 분위기 확인.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Los+Angeles,+CA&destination=Las+Vegas+Strip">LA→Vegas 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Bellagio+Fountains">벨라지오 분수</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>LA 출발</strong><span>교통 체증 피하려면 오전 출발 권장.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>Las Vegas 도착</strong><span>체크인 후 휴식.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>Las Vegas Strip / Bellagio Fountains</strong><span>무료 야경 코스 중심.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="vegas">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag vegas">Las Vegas</span><span class="tag">DAY 5 · 화</span><span class="tag">쇼·호텔 투어</span></div>
+              <h2>라스베가스 호텔 투어 · 공연</h2>
+              <p>베가스는 호텔 자체가 관광지. 낮에는 호텔 투어, 밤에는 쇼 하나를 넣는 날.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Bellagio+Las+Vegas&destination=The+Venetian+Las+Vegas&waypoints=Caesars+Palace+Las+Vegas">호텔 투어 경로</a>
+                <a class="link-btn" target="_blank" href="https://bellagio.mgmresorts.com/en/entertainment/fountains-of-bellagio.html">분수쇼 정보</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>늦잠 / 브런치</strong><span>전날 이동 피로 회복.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>Bellagio · Caesars · Venetian</strong><span>호텔 내부와 스트립 도보 관광.</span></div></div>
+            <div class="slot"><div class="time">밤</div><div><strong>공연 1개 선택</strong><span>O, KA, Sphere 등 취향에 맞춰 예약.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="vegas move">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag vegas">Las Vegas</span><span class="tag">DAY 6 · 수</span><span class="tag">선택형</span></div>
+              <h2>그랜드캐년 투어 또는 베가스 여유일</h2>
+              <p>체력에 따라 갈리는 날. 강행하면 그랜드캐년, 쉬고 싶으면 베가스 안에서 여유.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Grand+Canyon+West">그랜드캐년 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Las+Vegas+North+Premium+Outlets">아울렛</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">옵션 A</div><div><strong>Grand Canyon West / South Rim 투어</strong><span>긴 일정. 사전 예약 권장.</span></div></div>
+            <div class="slot"><div class="time">옵션 B</div><div><strong>호텔 수영장 · 쇼핑 · 카지노</strong><span>체력 회복형 일정.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>마지막 베가스 야경</strong><span>High Roller, Sphere 외관 등 추가 가능.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="la move">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag move">이동</span><span class="tag la">LA</span><span class="tag">DAY 7 · 목</span></div>
+              <h2>Las Vegas → LA 복귀</h2>
+              <p>복귀 이동일. 도착 후에는 욕심내지 말고 저녁 식사와 휴식 위주.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Los+Angeles,+CA">Vegas→LA 경로</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>체크아웃 후 출발</strong><span>점심 전 출발 추천.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>LA 도착</strong><span>체크인 또는 짐 정리.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>가벼운 식사</strong><span>한인타운 또는 숙소 근처 식사.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="la">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 8 · 금</span><span class="tag">쇼핑</span></div>
+              <h2>Citadel Outlets · 쇼핑 데이</h2>
+              <p>후반부 첫 풀데이는 쇼핑 중심. 렌터카가 있으면 가장 편한 일정.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Citadel+Outlets">지도 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.citadeloutlets.com/hours">영업시간</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>느긋한 출발</strong><span>전날 이동 피로 고려.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>Citadel Outlets</strong><span>쇼핑, 식사, 브랜드별 가격 확인.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>숙소 복귀</strong><span>구매품 정리.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="la">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 9 · 토</span><span class="tag">해변·여유</span></div>
+              <h2>Venice Beach · Santa Monica 마무리</h2>
+              <p>마지막 풀데이는 해변, 산책, 카페, 석양 위주로 느슨하게 구성.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Venice+Canals&destination=Santa+Monica+Pier&waypoints=Abbot+Kinney+Boulevard">오늘 경로</a>
+                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Venice+Canals">Venice Canals</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>Venice Canals / Venice Beach</strong><span>산책과 사진.</span></div></div>
+            <div class="slot"><div class="time">오후</div><div><strong>Abbot Kinney / Santa Monica</strong><span>카페, 쇼핑, 해변.</span></div></div>
+            <div class="slot"><div class="time">저녁</div><div><strong>Santa Monica Pier 석양</strong><span>마지막 LA 분위기.</span></div></div>
+          </div>
+        </article>
+
+        <article class="day" data-category="la move">
+          <div class="day-head">
+            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1583404314681-407e4f3757f6?auto=format&fit=crop&w=900&q=80')"></div>
+            <div class="day-title">
+              <div class="tags"><span class="tag move">출국</span><span class="tag la">LA</span><span class="tag">DAY 10 · 일</span></div>
+              <h2>귀국 준비 · LAX 이동</h2>
+              <p>마지막 날은 변수 줄이기. 렌터카 반납과 공항 이동 시간을 넉넉하게 잡기.</p>
+              <div class="links">
+                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=LAX">LAX 경로</a>
+              </div>
+            </div>
+          </div>
+          <div class="timeline">
+            <div class="slot"><div class="time">오전</div><div><strong>체크아웃 / 짐 정리</strong><span>쇼핑 물품 무게 확인.</span></div></div>
+            <div class="slot"><div class="time">출국 전</div><div><strong>렌터카 반납 → LAX</strong><span>국제선은 여유 있게 도착.</span></div></div>
+          </div>
+        </article>
+      </div>
+
+      <aside class="side">
+        <section class="panel">
+          <h2>🗺️ 일정 지도</h2>
+          <iframe id="map" loading="lazy" src="https://maps.google.com/maps?q=Los%20Angeles%20to%20Las%20Vegas&t=&z=7&ie=UTF8&iwloc=&output=embed"></iframe>
+          <div class="panel-body">
+            <a class="route-link" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=LAX&destination=LAX&waypoints=Santa+Monica+Pier%7CGriffith+Observatory%7CUniversal+Studios+Hollywood%7CLas+Vegas+Strip%7CCitadel+Outlets%7CVenice+Beach">전체 경로 열기</a>
+            <div class="memo">카드에 마우스를 올리면 우측 지도 미리보기가 해당 일정 중심으로 바뀐다.</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>📌 한눈에 보는 일정</h2>
+          <div class="panel-body overview">
+            <div class="overview-row"><b>금</b><span>LA 도착 · 산타모니카</span></div>
+            <div class="overview-row"><b>토</b><span>할리우드 · 베벌리힐즈 · 그리피스</span></div>
+            <div class="overview-row"><b>일</b><span>유니버설 스튜디오</span></div>
+            <div class="overview-row"><b>월</b><span>LA → 라스베가스 이동</span></div>
+            <div class="overview-row"><b>화</b><span>베가스 호텔 투어 · 쇼</span></div>
+            <div class="overview-row"><b>수</b><span>그랜드캐년 or 베가스 여유</span></div>
+            <div class="overview-row"><b>목</b><span>라스베가스 → LA 복귀</span></div>
+            <div class="overview-row"><b>금</b><span>Citadel Outlets</span></div>
+            <div class="overview-row"><b>토</b><span>Venice · Santa Monica</span></div>
+            <div class="overview-row"><b>일</b><span>LAX 이동 · 귀국</span></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>✅ 나중에 확정할 것</h2>
+          <div class="panel-body checklist">
+            <label><input type="checkbox"> LA 첫 숙소 위치</label>
+            <label><input type="checkbox"> 라스베가스 숙소 위치</label>
+            <label><input type="checkbox"> LA 마지막 숙소 위치</label>
+            <label><input type="checkbox"> 렌터카 픽업/반납 지점</label>
+            <label><input type="checkbox"> 유니버설 티켓</label>
+            <label><input type="checkbox"> 라스베가스 쇼</label>
+            <label><input type="checkbox"> 그랜드캐년 투어 여부</label>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('button[data-filter]');
+    const days = document.querySelectorAll('.day');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+
+        days.forEach(day => {
+          const category = day.dataset.category || '';
+          day.style.display = (filter === 'all' || category.includes(filter)) ? '' : 'none';
+        });
+
+        const mapQuery = {
+          all: 'Los Angeles to Las Vegas',
+          la: 'Los Angeles attractions Santa Monica Griffith Observatory Universal Studios Hollywood',
+          vegas: 'Las Vegas Strip Bellagio Venetian',
+          move: 'Los Angeles to Las Vegas driving route'
+        }[filter];
+
+        document.getElementById('map').src =
+          'https://maps.google.com/maps?q=' + encodeURIComponent(mapQuery) + '&t=&z=8&ie=UTF8&iwloc=&output=embed';
+      });
+    });
+
+    days.forEach(day => {
+      day.addEventListener('mouseenter', () => {
+        const title = day.querySelector('h2').textContent;
+        document.getElementById('map').src =
+          'https://maps.google.com/maps?q=' + encodeURIComponent(title) + '&t=&z=11&ie=UTF8&iwloc=&output=embed';
+      });
+    });
+  </script>
+</body>
+</html>
