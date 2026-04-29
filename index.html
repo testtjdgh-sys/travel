@@ -45,6 +45,18 @@
       </div>
     </section>
 
+    <section class="briefing-panel" id="briefingPanel" aria-label="현재 일정 브리핑">
+      <div class="briefing-copy">
+        <span class="section-kicker">Next up</span>
+        <h3 id="briefingTitle">일정 브리핑</h3>
+        <p id="briefingDesc">카드를 넘기면 이곳에 해당 날짜 핵심 동선이 표시됩니다.</p>
+      </div>
+      <div class="briefing-actions">
+        <a class="small-btn" id="briefingRoute" href="#" target="_blank" rel="noopener noreferrer">루트</a>
+        <button class="small-btn" id="copyDayBtn" type="button">복사</button>
+      </div>
+    </section>
+
     <section class="panel open" data-section="schedule" id="scheduleSection">
       <div class="panel-head">
         <div>
@@ -58,6 +70,7 @@
         <div class="carousel-status" id="dayStatus">DAY 1 / 10</div>
         <button class="round-btn" id="nextDay" type="button" data-carousel="next" aria-label="다음 일정">›</button>
       </div>
+      <div class="day-rail" id="dayRail" aria-label="일정 빠른 이동"></div>
       <div class="carousel-viewport" id="scheduleViewport">
         <div class="schedule-list" id="scheduleList"></div>
       </div>
@@ -91,6 +104,33 @@
         </div>
       </div>
       <div class="entity-grid" id="sectionCar"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>현장 도구</h3>
+          <p>여행 중 자주 쓰는 액션</p>
+        </div>
+      </div>
+      <div class="tool-grid">
+        <button class="tool-card" id="copyAllBtn" type="button">
+          <span>전체 일정 복사</span>
+          <strong>메신저 공유용</strong>
+        </button>
+        <a class="tool-card" href="https://www.google.com/maps/search/?api=1&query=LAX%20Airport" target="_blank" rel="noopener noreferrer">
+          <span>LAX 바로 열기</span>
+          <strong>공항 이동</strong>
+        </a>
+        <a class="tool-card" href="https://travel.state.gov/content/travel/en/us-visas/tourism-visit/visa-waiver-program.html" target="_blank" rel="noopener noreferrer">
+          <span>ESTA 확인</span>
+          <strong>출국 전 필수</strong>
+        </a>
+        <button class="tool-card" data-tab-jump="flight" type="button">
+          <span>예약 정보</span>
+          <strong>항공 · 숙소 · 렌트카</strong>
+        </button>
+      </div>
     </section>
 
     <section class="panel">

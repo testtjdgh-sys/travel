@@ -1,6 +1,7 @@
 const STORAGE = {
   notes: "travelhq_notes",
   checks: "travelhq_checks",
+  reservations: "travelhq_reservations",
 };
 
 const tripSections = [
@@ -40,47 +41,53 @@ const tripSections = [
 
 const flight = [
   {
+    id: "flight-out",
     title: "출발편",
     value: "미정",
     status: "나중에 넣기",
     desc: "도시 / 날짜 / 시간 / 항공사 / 편명",
-    meta: [["출발", "미정"], ["도착", "미정"]],
+    meta: [["출발", "미정"], ["도착", "미정"], ["편명", "미정"]],
   },
   {
+    id: "flight-return",
     title: "복귀편",
     value: "미정",
     status: "나중에 넣기",
     desc: "귀국 일정만 먼저 적어도 충분히 유용합니다.",
-    meta: [["출발", "미정"], ["도착", "미정"]],
+    meta: [["출발", "미정"], ["도착", "미정"], ["편명", "미정"]],
   },
 ];
 
 const stay = [
   {
+    id: "stay-la",
     title: "LA 숙소",
     value: "미정",
     status: "지역별로 분리",
     desc: "체크인/체크아웃 시간, 조식 여부, 주차비를 메모하기 좋게 만들었습니다.",
-    meta: [["체크인", "미정"], ["체크아웃", "미정"]],
+    meta: [["호텔", "미정"], ["체크인", "미정"], ["체크아웃", "미정"], ["주차", "미정"]],
   },
   {
+    id: "stay-vegas",
     title: "Vegas 숙소",
     value: "미정",
     status: "스트립 중심",
     desc: "가까운 호텔명만 있어도 동선 계획이 훨씬 쉬워집니다.",
-    meta: [["체크인", "미정"], ["체크아웃", "미정"]],
+    meta: [["호텔", "미정"], ["체크인", "미정"], ["체크아웃", "미정"], ["리조트피", "미정"]],
   },
 ];
 
 const car = [
   {
+    id: "car-main",
     title: "렌트카",
     value: "미정",
     status: "픽업 / 반납 메모",
     desc: "공항 픽업인지, 다운타운 픽업인지 적어두면 바로 쓸 수 있습니다.",
-    meta: [["보험", "미정"], ["반납", "미정"]],
+    meta: [["업체", "미정"], ["픽업", "미정"], ["반납", "미정"], ["보험", "미정"]],
   },
   {
+    id: "car-driving",
     title: "운전 메모",
     value: "미정",
     status: "운전 구간",
@@ -112,6 +119,67 @@ function mapsSearchUrl(query) {
 
 function mapsEmbedUrl(query) {
   return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=12&output=embed`;
+}
+
+function isMapPlace(place) {
+  const genericWords = ["체크인", "체크아웃", "시차", "출발", "휴게", "식사", "늦잠", "오픈런", "숙소", "공항 이동"];
+  return place && !place.includes("→") && !genericWords.some(word => place.includes(word));
+}
+
+function mapsDirectionsUrl(item) {
+  const places = item.schedule.map(slot => slot[1]).filter(isMapPlace);
+  if (places.length < 2) return mapsSearchUrl(item.mapQuery || item.title);
+  const origin = places[0];
+  const destination = places[places.length - 1];
+  const waypoints = places.slice(1, -1).join("|");
+  const params = new URLSearchParams({
+    api: "1",
+    origin,
+    destination,
+    travelmode: "driving",
+  });
+  if (waypoints) params.set("waypoints", waypoints);
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
+}
+
+function scheduleSummary(item) {
+  return [
+    `DAY ${item.day} · ${item.date} ${item.week} · ${item.title}`,
+    item.desc,
+    `숙소 기준: ${item.stayTime}`,
+    ...item.schedule.map(slot => `${slot[0]} - ${slot[1]}: ${slot[2]}`),
+    `팁: ${item.tip}`,
+  ].join("\n");
+}
+
+function placeMarkup(place) {
+  if (!isMapPlace(place)) return `<strong>${place}</strong>`;
+  return `<a class="place-link" href="${mapsSearchUrl(place)}" target="_blank" rel="noopener noreferrer"><strong>${place}</strong></a>`;
+}
+
+async function copyText(text, doneLabel = "복사됨") {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text);
+  } else {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+  }
+  showToast(doneLabel);
+}
+
+function showToast(message) {
+  const old = document.querySelector(".toast");
+  if (old) old.remove();
+  const toast = el("div", "toast", message);
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => toast.remove(), 1800);
 }
 
 const locationLabels = {
@@ -309,6 +377,7 @@ function renderSchedule(filter = "all") {
   list.innerHTML = "";
   visibleSchedule = scheduleData.filter(item => filter === "all" || item.type.includes(filter));
   activeDayIndex = Math.min(activeDayIndex, Math.max(visibleSchedule.length - 1, 0));
+  renderDayRail();
   renderActiveScheduleCard(false);
 }
 
@@ -338,21 +407,37 @@ function createScheduleCard(item) {
           </div>
         </div>
         <div class="logistics">
-          <div><span>위치</span><strong>${item.area}</strong></div>
           <div><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
-        </div>
+      </div>
       <div class="timeline">
-        ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer"><strong>${slot[1]}</strong></a><span>${slot[2]}</span></div></div>`).join("")}
+        ${item.schedule.map(slot => `<div class="timeline-row"><div class="timeline-time">${slot[0]}</div><div>${placeMarkup(slot[1])}<span>${slot[2]}</span></div></div>`).join("")}
       </div>
       <div class="day-tip">${item.tip}</div>
       <div class="day-actions">
+        <a class="small-btn" href="${mapsDirectionsUrl(item)}" target="_blank" rel="noopener noreferrer">하루 루트</a>
         <a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵</a>
+        <button class="small-btn" type="button" data-copy="${item.day}">일정 복사</button>
         <button class="small-btn" type="button" data-open="${item.day}">상세 열기</button>
       </div>
     </div>
   `;
   card.querySelector("[data-open]").addEventListener("click", () => openScheduleModal(item));
+  card.querySelector("[data-copy]").addEventListener("click", () => copyText(scheduleSummary(item), "하루 일정 복사됨"));
   return card;
+}
+
+function renderDayRail() {
+  const rail = document.getElementById("dayRail");
+  if (!rail) return;
+  rail.innerHTML = visibleSchedule.map((item, index) => `
+    <button class="day-pill ${index === activeDayIndex ? "active" : ""}" type="button" data-day-index="${index}">
+      <span>DAY ${item.day}</span>
+      <strong>${item.week}</strong>
+    </button>
+  `).join("");
+  rail.querySelectorAll("[data-day-index]").forEach(btn => {
+    btn.addEventListener("click", () => scrollToDay(Number(btn.dataset.dayIndex)));
+  });
 }
 
 function renderActiveScheduleCard(animate = true) {
@@ -362,6 +447,7 @@ function renderActiveScheduleCard(animate = true) {
   if (!visibleSchedule.length) {
     list.innerHTML = `<article class="day-card"><div class="day-body"><h4>일정 없음</h4><p>선택한 필터에 해당하는 일정이 없습니다.</p></div></article>`;
     updateDayStatus();
+    updateBriefing();
     return;
   }
   const item = visibleSchedule[activeDayIndex];
@@ -372,27 +458,111 @@ function renderActiveScheduleCard(animate = true) {
   }
   list.appendChild(card);
   updateDayStatus();
+  renderDayRail();
+  updateBriefing();
 }
 
-function renderEntityList(containerId, items, kind = "entity") {
+function updateBriefing() {
+  const title = document.getElementById("briefingTitle");
+  const desc = document.getElementById("briefingDesc");
+  const route = document.getElementById("briefingRoute");
+  if (!title || !desc || !route) return;
+  if (!visibleSchedule.length) {
+    title.textContent = "선택한 일정이 없습니다";
+    desc.textContent = "필터를 바꾸면 다시 표시됩니다.";
+    route.href = "#";
+    return;
+  }
+  const item = visibleSchedule[activeDayIndex];
+  const nextPlace = item.schedule[0]?.[1] || item.title;
+  title.textContent = `DAY ${item.day} · ${item.title}`;
+  desc.textContent = `${nextPlace}부터 시작 · ${item.stayTime}`;
+  route.href = mapsDirectionsUrl(item);
+}
+
+function reservationValue(item, label) {
+  const saved = readJSON(STORAGE.reservations, {});
+  return saved[item.id]?.[label] || item.meta.find(([name]) => name === label)?.[1] || "미정";
+}
+
+function isReservationFilled(item) {
+  const saved = readJSON(STORAGE.reservations, {});
+  return Object.values(saved[item.id] || {}).some(value => value.trim() && value.trim() !== "미정");
+}
+
+function renderEntityList(containerId, items) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.innerHTML = "";
   items.forEach((item) => {
+    const filled = isReservationFilled(item);
     const card = el("article", "entity");
     card.innerHTML = `
       <h4>${item.title}</h4>
       <p>${item.desc}</p>
       <div class="meta">
-        ${item.meta.map(([label, value]) => `<div class="meta-row"><span>${label}</span><strong>${value}</strong></div>`).join("")}
+        ${item.meta.map(([label]) => `<div class="meta-row"><span>${label}</span><strong>${reservationValue(item, label)}</strong></div>`).join("")}
       </div>
-      <div class="status-line"><span class="status-dot"></span>${item.status}</div>
+      <div class="status-line"><span class="status-dot ${filled ? "filled" : ""}"></span>${filled ? "입력됨" : item.status}</div>
       <div class="mini-actions">
-        <button class="small-btn" type="button">나중에 입력</button>
+        <button class="small-btn" type="button" data-edit="${item.id}">${filled ? "수정" : "입력"}</button>
+        ${filled ? `<button class="small-btn ghost-danger" type="button" data-reset="${item.id}">초기화</button>` : ""}
       </div>
     `;
+    card.querySelector("[data-edit]").addEventListener("click", () => openEntityEditor(containerId, item));
+    card.querySelector("[data-reset]")?.addEventListener("click", () => resetEntity(containerId, items, item));
     container.appendChild(card);
   });
+}
+
+function openEntityEditor(containerId, item) {
+  const saved = readJSON(STORAGE.reservations, {});
+  const current = saved[item.id] || {};
+  document.getElementById("detailModal").classList.add("open");
+  document.getElementById("detailModal").setAttribute("aria-hidden", "false");
+  document.getElementById("modalHero").classList.add("is-empty");
+  document.getElementById("modalHero").innerHTML = "";
+  document.getElementById("modalKicker").textContent = "예약 정보";
+  document.getElementById("modalTitle").textContent = item.title;
+  document.getElementById("modalDesc").textContent = "확정 전에는 대략적인 후보만 적어도 됩니다. 이 브라우저에 자동 저장됩니다.";
+  document.getElementById("modalMeta").innerHTML = `
+    <form class="edit-form" id="entityForm">
+      ${item.meta.map(([label, fallback]) => `
+        <label class="field">
+          <span>${label}</span>
+          <input name="${label}" value="${current[label] || (fallback === "미정" ? "" : fallback)}" placeholder="미정" autocomplete="off" />
+        </label>
+      `).join("")}
+      <label class="field field-wide">
+        <span>메모</span>
+        <textarea name="메모" placeholder="예약번호, 결제카드, 취소기한 등">${current["메모"] || ""}</textarea>
+      </label>
+    </form>
+  `;
+  document.getElementById("modalActions").innerHTML = `
+    <button class="small-btn" type="submit" form="entityForm">저장</button>
+    <button class="small-btn" type="button" id="cancelEntityEdit">닫기</button>
+  `;
+  document.getElementById("cancelEntityEdit").addEventListener("click", closeModal);
+  document.getElementById("entityForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    saved[item.id] = Object.fromEntries([...formData.entries()].map(([key, value]) => [key, String(value).trim() || "미정"]));
+    writeJSON(STORAGE.reservations, saved);
+    renderEntityList(containerId, containerId === "sectionFlight" ? flight : containerId === "sectionStay" ? stay : car);
+    updateStats();
+    closeModal();
+    showToast("예약 정보 저장됨");
+  });
+}
+
+function resetEntity(containerId, items, item) {
+  const saved = readJSON(STORAGE.reservations, {});
+  delete saved[item.id];
+  writeJSON(STORAGE.reservations, saved);
+  renderEntityList(containerId, items);
+  updateStats();
+  showToast("예약 정보 초기화됨");
 }
 
 function renderChecks() {
@@ -427,7 +597,8 @@ function updateStats() {
   document.getElementById("checkCount").textContent = `${Math.round((done / checks.length) * 100)}%`;
   document.getElementById("checkLabel").textContent = `${done}/${checks.length} 완료`;
 
-  const pending = 3;
+  const reservationItems = [...flight, ...stay, ...car];
+  const pending = reservationItems.filter(item => !isReservationFilled(item)).length;
   document.getElementById("pendingCount").textContent = String(pending);
   document.getElementById("confirmedCount").textContent = String(scheduleData.length);
   document.getElementById("confirmedLabel").textContent = "요일별 일정 카드";
@@ -443,6 +614,7 @@ function openModal(index) {
   const item = tripSections[index];
   document.getElementById("detailModal").classList.add("open");
   document.getElementById("detailModal").setAttribute("aria-hidden", "false");
+  document.getElementById("modalHero").classList.remove("is-empty");
   document.getElementById("modalHero").innerHTML = `<img src="${item.hero}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
   document.getElementById("modalKicker").textContent = item.status;
   document.getElementById("modalTitle").textContent = item.title;
@@ -460,15 +632,15 @@ function openModal(index) {
 function openScheduleModal(item) {
   document.getElementById("detailModal").classList.add("open");
   document.getElementById("detailModal").setAttribute("aria-hidden", "false");
+  document.getElementById("modalHero").classList.remove("is-empty");
   document.getElementById("modalHero").innerHTML = `<img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width="1200" height="800" fill=\"#101423\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
   document.getElementById("modalKicker").textContent = `${item.date} · ${item.week} · ${item.city}`;
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.tip;
   document.getElementById("modalMeta").innerHTML = `
     <div class="meta-card"><span>대략 위치</span><strong>${locationLabels[item.position] || item.area}</strong></div>
-    <div class="meta-card"><span>위치</span><strong>${item.area}</strong></div>
     <div class="meta-card"><span>숙소 기준</span><strong>${item.stayTime}</strong></div>
-    ${item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong><a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer">${slot[1]}</a><br>${slot[2]}</strong></div>`).join("")}
+    ${item.schedule.map(slot => `<div class="meta-card"><span>${slot[0]}</span><strong>${isMapPlace(slot[1]) ? `<a class="place-link" href="${mapsSearchUrl(slot[1])}" target="_blank" rel="noopener noreferrer">${slot[1]}</a>` : slot[1]}<br>${slot[2]}</strong></div>`).join("")}
   `;
   document.getElementById("modalActions").innerHTML = `<a class="small-btn" href="${mapsSearchUrl(item.title)}" target="_blank" rel="noopener noreferrer">구글맵 열기</a><button class="small-btn" type="button" id="closeFromSchedule">닫기</button>`;
   document.getElementById("closeFromSchedule").addEventListener("click", closeModal);
@@ -530,6 +702,13 @@ function bindNavigation() {
     btn.addEventListener("click", () => {
       scrollToDay(activeDayIndex + (btn.dataset.carousel === "next" ? 1 : -1));
     });
+  });
+  document.getElementById("copyDayBtn").addEventListener("click", () => {
+    const item = visibleSchedule[activeDayIndex];
+    if (item) copyText(scheduleSummary(item), "하루 일정 복사됨");
+  });
+  document.getElementById("copyAllBtn").addEventListener("click", () => {
+    copyText(scheduleData.map(scheduleSummary).join("\n\n---\n\n"), "전체 일정 복사됨");
   });
   const viewport = document.getElementById("scheduleViewport");
   let startX = 0;
