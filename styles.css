@@ -233,19 +233,21 @@ a,button{-webkit-tap-highlight-color:transparent}
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.carousel-viewport{
+  overflow:hidden;
+  border-radius:20px;
+  touch-action:pan-y;
+}
 .schedule-list{
   display:flex;
-  gap:14px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  scroll-padding-inline:4px;
-  padding:2px 4px 12px;
-  scrollbar-width:none;
+  gap:0;
+  padding:2px 0 12px;
+  will-change:transform;
+  transition:transform .32s cubic-bezier(.22,.61,.36,1);
 }
-.schedule-list::-webkit-scrollbar{display:none}
 .day-card{
-  flex:0 0 min(100%, 520px);
-  scroll-snap-align:center;
+  flex:0 0 100%;
+  min-width:0;
   overflow:hidden;
   border-radius:20px;
   border:1px solid var(--line);
@@ -489,8 +491,11 @@ a,button{-webkit-tap-highlight-color:transparent}
   }
   .content-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .entity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .schedule-list{scroll-padding-inline:18%}
-  .day-card{flex-basis:min(72%, 760px)}
+  .carousel-viewport{
+    max-width:760px;
+    margin:0 auto;
+  }
+  .day-card{flex-basis:100%}
   .panel[data-section="flight"],.panel[data-section="stay"],.panel[data-section="car"]{
     display:block;
   }
@@ -599,14 +604,10 @@ a,button{-webkit-tap-highlight-color:transparent}
     padding:10px;
     font-size:12px;
   }
-  .schedule-list{
-    margin-inline:-6px;
-    padding:2px 6px 10px;
-    gap:10px;
-    scroll-padding-inline:6px;
-  }
+  .carousel-viewport{margin-inline:-1px}
+  .schedule-list{padding:2px 0 10px}
   .day-card{
-    flex-basis:calc(100vw - 28px);
+    flex-basis:100%;
     border-radius:18px;
   }
   .day-banner{height:128px}

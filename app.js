@@ -310,7 +310,7 @@ function renderSchedule(filter = "all") {
     list.appendChild(card);
   });
   updateDayStatus();
-  requestAnimationFrame(() => scrollToDay(activeDayIndex, "auto"));
+  requestAnimationFrame(() => scrollToDay(activeDayIndex, false));
 }
 
 function renderEntityList(containerId, items, kind = "entity") {
@@ -423,12 +423,17 @@ function updateDayStatus() {
   status.textContent = `DAY ${item.day} / ${scheduleData.length} · ${item.date} ${item.week}`;
 }
 
-function scrollToDay(index, behavior = "smooth") {
+function scrollToDay(index, animate = true) {
   const list = document.getElementById("scheduleList");
-  const card = list?.querySelector(`[data-index="${index}"]`);
-  if (!card) return;
+  if (!list || !visibleSchedule.length) return;
   activeDayIndex = Math.max(0, Math.min(index, visibleSchedule.length - 1));
-  card.scrollIntoView({ behavior, block: "nearest", inline: "center" });
+  list.style.transition = animate ? "" : "none";
+  list.style.transform = `translate3d(${-activeDayIndex * 100}%,0,0)`;
+  if (!animate) {
+    requestAnimationFrame(() => {
+      list.style.transition = "";
+    });
+  }
   updateDayStatus();
 }
 
@@ -473,24 +478,26 @@ function bindNavigation() {
   document.getElementById("nextDay").addEventListener("click", () => {
     scrollToDay(activeDayIndex + 1);
   });
-  document.getElementById("scheduleList").addEventListener("scroll", () => {
-    const list = document.getElementById("scheduleList");
-    const cards = [...list.querySelectorAll(".day-card")];
-    if (!cards.length) return;
-    const center = list.scrollLeft + list.clientWidth / 2;
-    let closest = 0;
-    let distance = Infinity;
-    cards.forEach((card, index) => {
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const nextDistance = Math.abs(cardCenter - center);
-      if (nextDistance < distance) {
-        distance = nextDistance;
-        closest = index;
-      }
-    });
-    activeDayIndex = closest;
-    updateDayStatus();
-  }, { passive: true });
+  const viewport = document.getElementById("scheduleViewport");
+  let startX = 0;
+  let startY = 0;
+  let dragging = false;
+  viewport.addEventListener("pointerdown", (event) => {
+    startX = event.clientX;
+    startY = event.clientY;
+    dragging = true;
+  });
+  viewport.addEventListener("pointerup", (event) => {
+    if (!dragging) return;
+    dragging = false;
+    const diffX = event.clientX - startX;
+    const diffY = event.clientY - startY;
+    if (Math.abs(diffX) < 44 || Math.abs(diffX) < Math.abs(diffY)) return;
+    scrollToDay(activeDayIndex + (diffX < 0 ? 1 : -1));
+  });
+  viewport.addEventListener("pointercancel", () => {
+    dragging = false;
+  });
   document.getElementById("exportBtn").addEventListener("click", () => window.print());
   document.getElementById("closeModal").addEventListener("click", closeModal);
   document.getElementById("detailModal").addEventListener("click", (e) => {
