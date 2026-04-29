@@ -2,648 +2,910 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LA · Las Vegas 여행 일정표</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>LA · Vegas Mobile Trip</title>
+  <meta name="description" content="모바일로 확인하기 좋은 LA-라스베가스 여행 일정 앱" />
   <style>
-    :root {
-      --bg: #f6f7fb;
-      --card: #ffffff;
-      --text: #202432;
-      --muted: #697386;
-      --line: #e7eaf0;
-      --la: #2563eb;
-      --vegas: #f97316;
-      --move: #7c3aed;
-      --soft-la: #eaf2ff;
-      --soft-vegas: #fff2e6;
-      --soft-move: #f1e9ff;
-      --shadow: 0 14px 34px rgba(20, 28, 45, 0.08);
-      --radius: 24px;
+    :root{
+      --bg:#070b18;
+      --card:#111827;
+      --card2:#172033;
+      --text:#f8fafc;
+      --muted:#a8b3c7;
+      --line:rgba(255,255,255,.12);
+      --blue:#60a5fa;
+      --orange:#fb923c;
+      --pink:#fb7185;
+      --green:#34d399;
+      --purple:#a78bfa;
+      --yellow:#fbbf24;
+      --white:#fff;
+      --radius:24px;
+      --shadow:0 18px 54px rgba(0,0,0,.35);
+      --bottom:82px;
     }
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", Roboto, Arial, sans-serif;
-      color: var(--text);
-      background: linear-gradient(180deg, #edf4ff 0, var(--bg) 280px);
-      line-height: 1.55;
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,.25), transparent 24rem),
+        radial-gradient(circle at 80% 0%, rgba(251,146,60,.20), transparent 22rem),
+        linear-gradient(180deg,#080d1d 0%,#0b1020 45%,#060913 100%);
+      padding-bottom:calc(var(--bottom) + env(safe-area-inset-bottom));
     }
 
-    a { color: inherit; text-decoration: none; }
+    a{color:inherit;text-decoration:none}
+    button{font-family:inherit}
 
-    .wrap {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 60px;
+    .app{
+      width:min(720px,100%);
+      margin:0 auto;
+      padding:14px 14px 0;
     }
 
-    .hero {
-      background: rgba(255,255,255,0.88);
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: 34px;
-      box-shadow: var(--shadow);
-      padding: 30px;
-      margin-bottom: 22px;
-      display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 24px;
-      align-items: center;
+    .top{
+      position:sticky;
+      top:0;
+      z-index:30;
+      padding:10px 0 12px;
+      backdrop-filter:blur(18px);
+      background:linear-gradient(180deg,rgba(7,11,24,.92),rgba(7,11,24,.62));
     }
 
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 56px);
-      line-height: 1.04;
-      letter-spacing: -0.05em;
-      margin: 0 0 12px;
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
     }
 
-    .hero p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 17px;
+    .brand-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:0;
     }
 
-    .quick {
-      display: grid;
-      gap: 10px;
+    .logo{
+      width:42px;height:42px;border-radius:15px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--blue),var(--orange));
+      box-shadow:0 12px 28px rgba(96,165,250,.28);
+      flex:0 0 auto;
     }
 
-    .quick-item {
-      background: #f8fafc;
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 14px;
+    .brand h1{
+      font-size:17px;
+      line-height:1.1;
+      margin:0;
+      letter-spacing:-.02em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    .quick-item b {
-      display: block;
-      margin-bottom: 2px;
+    .brand small{
+      display:block;
+      color:var(--muted);
+      margin-top:2px;
+      font-size:12px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
-    .quick-item span {
-      color: var(--muted);
-      font-size: 14px;
+    .ghost{
+      border:1px solid var(--line);
+      color:var(--text);
+      background:rgba(255,255,255,.08);
+      border-radius:999px;
+      padding:9px 12px;
+      font-weight:900;
+      font-size:12px;
     }
 
-    .controls {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 12px 0;
-      margin-bottom: 10px;
-      background: rgba(246,247,251,0.88);
-      backdrop-filter: blur(10px);
+    .hero{
+      margin-top:8px;
+      border:1px solid var(--line);
+      border-radius:30px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+      background:#111827;
+      position:relative;
     }
 
-    button {
-      border: 1px solid var(--line);
-      background: white;
-      color: var(--text);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(20, 28, 45, 0.05);
+    .hero-img{
+      height:260px;
+      background:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1200&q=85') center/cover;
+      position:relative;
+      transition:.25s ease;
     }
 
-    button.active {
-      background: #202432;
-      color: white;
-      border-color: #202432;
+    .hero-img::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,rgba(0,0,0,.05) 0%,rgba(0,0,0,.78) 100%);
     }
 
-    .main {
-      display: grid;
-      grid-template-columns: 1fr 360px;
-      gap: 20px;
-      align-items: start;
+    .hero-copy{
+      position:absolute;
+      left:18px;right:18px;bottom:18px;
+      z-index:1;
     }
 
-    .side {
-      position: sticky;
-      top: 74px;
-      display: grid;
-      gap: 16px;
+    .date-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.16);
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter:blur(12px);
+      font-size:12px;
+      font-weight:900;
+      margin-bottom:10px;
     }
 
-    .panel {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
+    .hero h2{
+      margin:0 0 6px;
+      font-size:32px;
+      line-height:.98;
+      letter-spacing:-.055em;
     }
 
-    .panel h2 {
-      margin: 0;
-      padding: 18px 18px 12px;
-      font-size: 18px;
-      border-bottom: 1px solid var(--line);
+    .hero p{
+      margin:0;
+      color:rgba(255,255,255,.78);
+      font-size:14px;
+      max-width:92%;
     }
 
-    .panel-body {
-      padding: 16px 18px 18px;
+    .quick-actions{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
+      margin:14px 0;
     }
 
-    iframe {
-      width: 100%;
-      height: 280px;
-      border: 0;
-      display: block;
-      background: #e5e7eb;
+    .qa{
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(255,255,255,.07);
+      padding:13px 10px;
+      text-align:center;
+      min-height:74px;
+      display:grid;
+      place-items:center;
+      gap:4px;
     }
 
-    .route-link {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      margin-top: 12px;
-      background: #202432;
-      color: white;
-      border-radius: 14px;
-      padding: 12px;
-      font-weight: 900;
+    .qa b{font-size:20px;line-height:1}
+    .qa span{font-size:12px;color:var(--muted);font-weight:800}
+
+    .section-title{
+      margin:20px 2px 10px;
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:10px;
     }
 
-    .day {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      margin-bottom: 18px;
+    .section-title h2{
+      margin:0;
+      font-size:20px;
+      letter-spacing:-.03em;
     }
 
-    .day-head {
-      display: grid;
-      grid-template-columns: 210px 1fr;
-      min-height: 190px;
+    .section-title span{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
     }
 
-    .photo {
-      background-size: cover;
-      background-position: center;
-      min-height: 190px;
+    .must-grid{
+      display:grid;
+      gap:10px;
     }
 
-    .day-title {
-      padding: 22px;
+    .must{
+      border:1px solid var(--line);
+      background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+      border-radius:24px;
+      padding:15px;
+      display:grid;
+      grid-template-columns:46px 1fr;
+      gap:12px;
+      align-items:start;
     }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
+    .must-icon{
+      width:46px;height:46px;border-radius:16px;
+      display:grid;place-items:center;
+      font-size:22px;
+      background:rgba(255,255,255,.12);
     }
 
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 900;
-      color: #344054;
-      background: #f2f4f7;
+    .must h3{
+      margin:0 0 5px;
+      font-size:16px;
+      letter-spacing:-.02em;
     }
 
-    .tag.la { background: var(--soft-la); color: var(--la); }
-    .tag.vegas { background: var(--soft-vegas); color: #c2410c; }
-    .tag.move { background: var(--soft-move); color: var(--move); }
-
-    .day h2 {
-      margin: 0 0 8px;
-      font-size: 25px;
-      letter-spacing: -0.035em;
+    .must p{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .day p {
-      margin: 0;
-      color: var(--muted);
+    .btns{display:flex;flex-wrap:wrap;gap:8px}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border-radius:14px;
+      padding:9px 11px;
+      font-weight:900;
+      font-size:12px;
+    }
+    .btn.primary{background:var(--text);color:#111827;border-color:var(--text)}
+    .btn.blue{background:rgba(96,165,250,.18);color:#dbeafe;border-color:rgba(96,165,250,.35)}
+    .btn.orange{background:rgba(251,146,60,.18);color:#ffedd5;border-color:rgba(251,146,60,.35)}
+
+    .map-card{
+      border:1px solid var(--line);
+      border-radius:26px;
+      overflow:hidden;
+      background:rgba(255,255,255,.07);
+      box-shadow:var(--shadow);
     }
 
-    .timeline {
-      padding: 0 22px 22px;
-      display: grid;
-      gap: 10px;
+    iframe{
+      border:0;
+      width:100%;
+      height:260px;
+      display:block;
+      background:#111827;
     }
 
-    .slot {
-      display: grid;
-      grid-template-columns: 86px 1fr;
-      gap: 12px;
-      border: 1px solid #edf0f5;
-      background: #fbfcfe;
-      border-radius: 18px;
-      padding: 13px;
+    .map-info{
+      padding:13px 14px 14px;
     }
 
-    .time {
-      color: var(--muted);
-      font-weight: 900;
-      font-size: 13px;
+    .map-info b{
+      display:block;
+      margin-bottom:4px;
+      font-size:15px;
     }
 
-    .slot strong {
-      display: block;
-      margin-bottom: 2px;
+    .map-info p{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:13px;
     }
 
-    .slot span {
-      color: var(--muted);
-      font-size: 14px;
+    .filters{
+      display:flex;
+      gap:8px;
+      overflow:auto;
+      padding:2px 0 10px;
+      scrollbar-width:none;
+    }
+    .filters::-webkit-scrollbar{display:none}
+    .filter{
+      white-space:nowrap;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:10px 13px;
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      font-weight:900;
+      font-size:13px;
+    }
+    .filter.active{background:var(--text);color:#111827;border-color:var(--text)}
+
+    .day-list{
+      display:grid;
+      gap:12px;
     }
 
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
+    .day{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.08);
+      border-radius:26px;
+      overflow:hidden;
+      box-shadow:0 14px 36px rgba(0,0,0,.18);
     }
 
-    .link-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 9px 12px;
-      font-size: 13px;
-      font-weight: 900;
-      background: white;
+    .day-img{
+      height:150px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .day-img::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,transparent,rgba(0,0,0,.65));
     }
 
-    .link-btn.primary {
-      background: #202432;
-      color: white;
-      border-color: #202432;
+    .day-no{
+      position:absolute;
+      left:14px;
+      bottom:10px;
+      z-index:1;
+      font-size:34px;
+      font-weight:950;
+      letter-spacing:-.08em;
     }
 
-    .overview {
-      display: grid;
-      gap: 10px;
+    .badge-row{
+      position:absolute;
+      right:10px;
+      bottom:12px;
+      z-index:1;
+      display:flex;
+      gap:6px;
     }
 
-    .overview-row {
-      display: grid;
-      grid-template-columns: 72px 1fr;
-      gap: 10px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--line);
+    .badge{
+      padding:6px 9px;
+      border-radius:999px;
+      font-size:11px;
+      font-weight:950;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.22);
+      backdrop-filter:blur(10px);
     }
 
-    .overview-row:last-child { border-bottom: 0; }
-
-    .overview-row b { font-size: 13px; }
-    .overview-row span { color: var(--muted); font-size: 13px; }
-
-    .memo {
-      background: #fff7ed;
-      border-left: 4px solid var(--vegas);
-      border-radius: 14px;
-      padding: 12px 14px;
-      color: #7c2d12;
-      font-size: 14px;
-      margin-top: 12px;
+    .day-body{
+      padding:15px;
     }
 
-    .checklist {
-      display: grid;
-      gap: 8px;
-      color: #344054;
-      font-size: 14px;
+    .day h3{
+      margin:0 0 6px;
+      font-size:19px;
+      letter-spacing:-.035em;
     }
 
-    .checklist label {
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
+    .day-desc{
+      margin:0 0 12px;
+      color:var(--muted);
+      font-size:13px;
     }
 
-    @media (max-width: 980px) {
-      .hero, .main, .day-head {
-        grid-template-columns: 1fr;
-      }
-      .side {
-        position: static;
-      }
-      .photo {
-        min-height: 170px;
-      }
+    .timeline{
+      display:grid;
+      gap:8px;
+      margin-bottom:13px;
     }
 
-    @media print {
-      body { background: white; }
-      .controls, .side, .link-btn, .route-link { display: none; }
-      .wrap { width: 100%; padding: 0; }
-      .hero, .day { box-shadow: none; break-inside: avoid; }
+    .slot{
+      display:grid;
+      grid-template-columns:62px 1fr;
+      gap:9px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:16px;
+      padding:10px;
+    }
+
+    .slot-time{
+      color:#bfdbfe;
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .slot strong{
+      display:block;
+      font-size:13px;
+      margin-bottom:1px;
+    }
+
+    .slot span{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .sports-alert{
+      border:1px solid rgba(251,191,36,.35);
+      background:rgba(251,191,36,.10);
+      border-radius:20px;
+      padding:13px;
+      margin-bottom:12px;
+    }
+
+    .sports-alert b{
+      color:#fde68a;
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .sports-alert p{
+      margin:0;
+      color:#fef3c7;
+      font-size:13px;
+    }
+
+    .bottom-nav{
+      position:fixed;
+      left:0;right:0;bottom:0;
+      z-index:60;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(7,11,24,.86);
+      backdrop-filter:blur(18px);
+      border-top:1px solid var(--line);
+    }
+
+    .bottom-inner{
+      width:min(720px,100%);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+    }
+
+    .nav-btn{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.07);
+      color:var(--text);
+      border-radius:18px;
+      padding:9px 4px;
+      display:grid;
+      place-items:center;
+      gap:3px;
+      font-size:11px;
+      font-weight:900;
+    }
+
+    .nav-btn span{font-size:18px;line-height:1}
+
+    .modal{
+      position:fixed;
+      inset:0;
+      z-index:100;
+      display:none;
+      align-items:flex-end;
+      background:rgba(0,0,0,.65);
+      backdrop-filter:blur(8px);
+    }
+
+    .modal.open{display:flex}
+
+    .sheet{
+      width:100%;
+      max-height:88vh;
+      overflow:auto;
+      background:#0f172a;
+      border:1px solid var(--line);
+      border-radius:28px 28px 0 0;
+      box-shadow:var(--shadow);
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+
+    .sheet-img{
+      height:220px;
+      background-size:cover;
+      background-position:center;
+      position:relative;
+    }
+    .sheet-img::after{
+      content:"";
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,transparent,rgba(15,23,42,.85));
+    }
+    .sheet-title{
+      position:absolute;
+      left:16px;right:52px;bottom:15px;
+      z-index:1;
+    }
+    .sheet-title h2{
+      margin:0 0 4px;
+      font-size:25px;
+      letter-spacing:-.04em;
+    }
+    .sheet-title p{
+      margin:0;color:rgba(255,255,255,.75);font-size:13px;
+    }
+
+    .close{
+      position:absolute;
+      right:13px;top:13px;
+      width:40px;height:40px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.35);
+      color:white;
+      font-size:22px;
+      z-index:2;
+    }
+
+    .sheet-body{padding:15px}
+    .tip{
+      border-left:4px solid var(--orange);
+      background:rgba(251,146,60,.12);
+      color:#ffedd5;
+      border-radius:16px;
+      padding:12px;
+      font-size:13px;
+      margin:12px 0;
+    }
+
+    .checklist{
+      display:grid;
+      gap:8px;
+    }
+
+    .check{
+      display:flex;
+      gap:9px;
+      align-items:flex-start;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.07);
+      border-radius:16px;
+      padding:11px;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .source-note{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+      margin:12px 2px 4px;
+    }
+
+    @media (min-width:760px){
+      .hero-img{height:340px}
+      iframe{height:320px}
+      .day-img{height:210px}
+      .quick-actions{grid-template-columns:repeat(5,1fr)}
+      .bottom-nav{display:none}
+      body{padding-bottom:40px}
+    }
+
+    @media print{
+      body{background:white;color:#111827;padding:0}
+      .top,.bottom-nav,.map-card,.btns,.filters,.modal{display:none!important}
+      .app{width:100%;padding:0}
+      .hero,.day,.must{box-shadow:none;break-inside:avoid;color:#111827;background:white;border:1px solid #ddd}
+      .day-desc,.slot span,.source-note{color:#555}
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <div>
-        <h1>LA · Las Vegas<br>여행 일정표</h1>
-        <p>숙소는 나중에 정하는 전제로, 일정과 동선이 한눈에 보이도록 구성한 여행 노트. 장소 링크를 눌러 지도에서 바로 확인할 수 있다.</p>
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="brand-left">
+          <div class="logo">🌴</div>
+          <div>
+            <h1>LA · Vegas 여행 보드</h1>
+            <small>중간중간 모바일로 확인하는 일정표</small>
+          </div>
+        </div>
+        <button class="ghost" onclick="window.print()">PDF</button>
       </div>
-      <div class="quick">
-        <div class="quick-item"><b>금·토·일: LA</b><span>도착 적응, 핵심 관광, 유니버설</span></div>
-        <div class="quick-item"><b>월·화·수: Las Vegas</b><span>렌터카 이동, 스트립, 쇼, 그랜드캐년 선택</span></div>
-        <div class="quick-item"><b>목·금·토·일: LA</b><span>복귀, 쇼핑, 해변, 귀국 준비</span></div>
+    </header>
+
+    <section class="hero" id="home">
+      <div class="hero-img" id="heroImg">
+        <div class="hero-copy">
+          <div class="date-pill">📅 9/25 금 → 10/5 일</div>
+          <h2 id="heroTitle">LA → Vegas → LA</h2>
+          <p id="heroDesc">Sphere는 필수 일정으로 고정. NBA/MLB는 현재 확정 가능한 일정 기준으로 체크 슬롯을 넣었다.</p>
+        </div>
       </div>
     </section>
 
-    <nav class="controls">
-      <button class="active" data-filter="all">전체 일정</button>
-      <button data-filter="la">LA만 보기</button>
-      <button data-filter="vegas">라스베가스</button>
-      <button data-filter="move">이동일</button>
-    </nav>
+    <section class="quick-actions">
+      <a class="qa" href="#must"><b>⭐</b><span>필수 일정</span></a>
+      <a class="qa" href="#mapsec"><b>🗺️</b><span>지도</span></a>
+      <a class="qa" href="#schedule"><b>📅</b><span>일정</span></a>
+      <a class="qa" href="#check"><b>✅</b><span>체크</span></a>
+      <a class="qa" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=LAX&destination=LAX&waypoints=Santa+Monica+Pier%7CGriffith+Observatory%7CUniversal+Studios+Hollywood%7CLas+Vegas+Strip%7CSphere+Las+Vegas%7CCitadel+Outlets%7CVenice+Beach"><b>🚗</b><span>전체 경로</span></a>
+    </section>
 
-    <section class="main">
-      <div class="days">
-        <article class="day" data-category="la">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 1 · 금</span><span class="tag">컨디션 조절</span></div>
-              <h2>LA 도착 · 산타모니카 가볍게 적응</h2>
-              <p>첫날은 시차 적응이 핵심. 무리하지 말고 해변 산책 정도로 마무리.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Santa+Monica+Pier">지도 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Santa+Monica+Beach">산타모니카</a>
-              </div>
+    <section id="must">
+      <div class="section-title">
+        <h2>필수로 넣은 일정</h2>
+        <span>예약 우선순위</span>
+      </div>
+      <div class="must-grid">
+        <article class="must">
+          <div class="must-icon">🟠</div>
+          <div>
+            <h3>Sphere · The Wizard of Oz</h3>
+            <p>9/29 화요일 17:00 공연을 베가스 핵심 일정으로 고정. 늦은 입장 불가 안내가 있으니 여유 있게 도착.</p>
+            <div class="btns">
+              <a class="btn primary" target="_blank" href="https://www.ticketmaster.com/the-wizard-of-oz-at-sphere-las-vegas-nevada-09-29-2026/event/170064311316EF6B">티켓 보기</a>
+              <a class="btn orange" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Sphere+Las+Vegas">지도</a>
             </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">도착 후</div><div><strong>LAX → 숙소 체크인</strong><span>숙소 위치 미정. 첫날은 이동 최소화.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>Santa Monica Beach / Pier</strong><span>가볍게 걷고 식사. 피곤하면 바로 휴식.</span></div></div>
-            <div class="slot"><div class="time">밤</div><div><strong>시차 적응</strong><span>다음날부터 본격 일정이므로 일찍 쉬기.</span></div></div>
           </div>
         </article>
 
-        <article class="day" data-category="la">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 2 · 토</span><span class="tag">대표 관광</span></div>
-              <h2>할리우드 · 베벌리힐즈 · 그리피스 야경</h2>
-              <p>LA 대표 관광지를 하루에 압축. 그리피스는 일몰 전 도착 추천.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Hollywood+Walk+of+Fame&destination=Griffith+Observatory&waypoints=Rodeo+Drive">오늘 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Griffith+Observatory">그리피스</a>
-              </div>
+        <article class="must">
+          <div class="must-icon">⚾</div>
+          <div>
+            <h3>NBA/MLB 체험 슬롯</h3>
+            <p>현재 일정상 LA 체류일에 LA 홈 MLB 확정 경기는 없음. NBA는 2026-27 프리시즌 세부 일정이 아직 확정 전이라, 10/3 토요일 저녁을 스포츠 슬롯으로 비워둠.</p>
+            <div class="btns">
+              <a class="btn blue" target="_blank" href="https://www.nba.com/lakers/schedule">Lakers 일정</a>
+              <a class="btn blue" target="_blank" href="https://www.nba.com/clippers/schedule">Clippers 일정</a>
+              <a class="btn blue" target="_blank" href="https://www.mlb.com/dodgers/schedule">Dodgers 일정</a>
             </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>Hollywood Walk of Fame</strong><span>가볍게 사진 위주. 오래 머물 필요는 적음.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>Beverly Hills / Rodeo Drive</strong><span>거리 구경, 카페, 사진.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>Griffith Observatory</strong><span>야경 핵심 코스. 주말 혼잡 고려.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="la">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1569135219920-00898b584df4?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 3 · 일</span><span class="tag">체험형</span></div>
-              <h2>Universal Studios Hollywood</h2>
-              <p>미국 여행 느낌을 가장 확실히 주는 날. 하루 통째로 비워두는 구성.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Universal+Studios+Hollywood">지도 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.universalstudioshollywood.com/calendar-and-hours/">운영시간 확인</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>오픈 시간 맞춰 입장</strong><span>인기 어트랙션 먼저 처리.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>스튜디오 투어 / 해리포터 존</strong><span>대기시간 확인하며 유동적으로 이동.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>CityWalk 식사</strong><span>체력에 따라 바로 복귀 가능.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="vegas move">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag move">이동</span><span class="tag vegas">Las Vegas</span><span class="tag">DAY 4 · 월</span></div>
-              <h2>LA → Las Vegas 이동 · 스트립 야경</h2>
-              <p>렌터카 이동일. 오전에 출발해서 오후 체크인, 밤에는 스트립 분위기 확인.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Los+Angeles,+CA&destination=Las+Vegas+Strip">LA→Vegas 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Bellagio+Fountains">벨라지오 분수</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>LA 출발</strong><span>교통 체증 피하려면 오전 출발 권장.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>Las Vegas 도착</strong><span>체크인 후 휴식.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>Las Vegas Strip / Bellagio Fountains</strong><span>무료 야경 코스 중심.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="vegas">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1605833556294-ea5c7a74f57d?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag vegas">Las Vegas</span><span class="tag">DAY 5 · 화</span><span class="tag">쇼·호텔 투어</span></div>
-              <h2>라스베가스 호텔 투어 · 공연</h2>
-              <p>베가스는 호텔 자체가 관광지. 낮에는 호텔 투어, 밤에는 쇼 하나를 넣는 날.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Bellagio+Las+Vegas&destination=The+Venetian+Las+Vegas&waypoints=Caesars+Palace+Las+Vegas">호텔 투어 경로</a>
-                <a class="link-btn" target="_blank" href="https://bellagio.mgmresorts.com/en/entertainment/fountains-of-bellagio.html">분수쇼 정보</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>늦잠 / 브런치</strong><span>전날 이동 피로 회복.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>Bellagio · Caesars · Venetian</strong><span>호텔 내부와 스트립 도보 관광.</span></div></div>
-            <div class="slot"><div class="time">밤</div><div><strong>공연 1개 선택</strong><span>O, KA, Sphere 등 취향에 맞춰 예약.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="vegas move">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag vegas">Las Vegas</span><span class="tag">DAY 6 · 수</span><span class="tag">선택형</span></div>
-              <h2>그랜드캐년 투어 또는 베가스 여유일</h2>
-              <p>체력에 따라 갈리는 날. 강행하면 그랜드캐년, 쉬고 싶으면 베가스 안에서 여유.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Grand+Canyon+West">그랜드캐년 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Las+Vegas+North+Premium+Outlets">아울렛</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">옵션 A</div><div><strong>Grand Canyon West / South Rim 투어</strong><span>긴 일정. 사전 예약 권장.</span></div></div>
-            <div class="slot"><div class="time">옵션 B</div><div><strong>호텔 수영장 · 쇼핑 · 카지노</strong><span>체력 회복형 일정.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>마지막 베가스 야경</strong><span>High Roller, Sphere 외관 등 추가 가능.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="la move">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag move">이동</span><span class="tag la">LA</span><span class="tag">DAY 7 · 목</span></div>
-              <h2>Las Vegas → LA 복귀</h2>
-              <p>복귀 이동일. 도착 후에는 욕심내지 말고 저녁 식사와 휴식 위주.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Los+Angeles,+CA">Vegas→LA 경로</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>체크아웃 후 출발</strong><span>점심 전 출발 추천.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>LA 도착</strong><span>체크인 또는 짐 정리.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>가벼운 식사</strong><span>한인타운 또는 숙소 근처 식사.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="la">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 8 · 금</span><span class="tag">쇼핑</span></div>
-              <h2>Citadel Outlets · 쇼핑 데이</h2>
-              <p>후반부 첫 풀데이는 쇼핑 중심. 렌터카가 있으면 가장 편한 일정.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=Citadel+Outlets">지도 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.citadeloutlets.com/hours">영업시간</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>느긋한 출발</strong><span>전날 이동 피로 고려.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>Citadel Outlets</strong><span>쇼핑, 식사, 브랜드별 가격 확인.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>숙소 복귀</strong><span>구매품 정리.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="la">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag la">LA</span><span class="tag">DAY 9 · 토</span><span class="tag">해변·여유</span></div>
-              <h2>Venice Beach · Santa Monica 마무리</h2>
-              <p>마지막 풀데이는 해변, 산책, 카페, 석양 위주로 느슨하게 구성.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=Venice+Canals&destination=Santa+Monica+Pier&waypoints=Abbot+Kinney+Boulevard">오늘 경로</a>
-                <a class="link-btn" target="_blank" href="https://www.google.com/maps/search/Venice+Canals">Venice Canals</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>Venice Canals / Venice Beach</strong><span>산책과 사진.</span></div></div>
-            <div class="slot"><div class="time">오후</div><div><strong>Abbot Kinney / Santa Monica</strong><span>카페, 쇼핑, 해변.</span></div></div>
-            <div class="slot"><div class="time">저녁</div><div><strong>Santa Monica Pier 석양</strong><span>마지막 LA 분위기.</span></div></div>
-          </div>
-        </article>
-
-        <article class="day" data-category="la move">
-          <div class="day-head">
-            <div class="photo" style="background-image:url('https://images.unsplash.com/photo-1583404314681-407e4f3757f6?auto=format&fit=crop&w=900&q=80')"></div>
-            <div class="day-title">
-              <div class="tags"><span class="tag move">출국</span><span class="tag la">LA</span><span class="tag">DAY 10 · 일</span></div>
-              <h2>귀국 준비 · LAX 이동</h2>
-              <p>마지막 날은 변수 줄이기. 렌터카 반납과 공항 이동 시간을 넉넉하게 잡기.</p>
-              <div class="links">
-                <a class="link-btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&destination=LAX">LAX 경로</a>
-              </div>
-            </div>
-          </div>
-          <div class="timeline">
-            <div class="slot"><div class="time">오전</div><div><strong>체크아웃 / 짐 정리</strong><span>쇼핑 물품 무게 확인.</span></div></div>
-            <div class="slot"><div class="time">출국 전</div><div><strong>렌터카 반납 → LAX</strong><span>국제선은 여유 있게 도착.</span></div></div>
           </div>
         </article>
       </div>
-
-      <aside class="side">
-        <section class="panel">
-          <h2>🗺️ 일정 지도</h2>
-          <iframe id="map" loading="lazy" src="https://maps.google.com/maps?q=Los%20Angeles%20to%20Las%20Vegas&t=&z=7&ie=UTF8&iwloc=&output=embed"></iframe>
-          <div class="panel-body">
-            <a class="route-link" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=LAX&destination=LAX&waypoints=Santa+Monica+Pier%7CGriffith+Observatory%7CUniversal+Studios+Hollywood%7CLas+Vegas+Strip%7CCitadel+Outlets%7CVenice+Beach">전체 경로 열기</a>
-            <div class="memo">카드에 마우스를 올리면 우측 지도 미리보기가 해당 일정 중심으로 바뀐다.</div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>📌 한눈에 보는 일정</h2>
-          <div class="panel-body overview">
-            <div class="overview-row"><b>금</b><span>LA 도착 · 산타모니카</span></div>
-            <div class="overview-row"><b>토</b><span>할리우드 · 베벌리힐즈 · 그리피스</span></div>
-            <div class="overview-row"><b>일</b><span>유니버설 스튜디오</span></div>
-            <div class="overview-row"><b>월</b><span>LA → 라스베가스 이동</span></div>
-            <div class="overview-row"><b>화</b><span>베가스 호텔 투어 · 쇼</span></div>
-            <div class="overview-row"><b>수</b><span>그랜드캐년 or 베가스 여유</span></div>
-            <div class="overview-row"><b>목</b><span>라스베가스 → LA 복귀</span></div>
-            <div class="overview-row"><b>금</b><span>Citadel Outlets</span></div>
-            <div class="overview-row"><b>토</b><span>Venice · Santa Monica</span></div>
-            <div class="overview-row"><b>일</b><span>LAX 이동 · 귀국</span></div>
-          </div>
-        </section>
-
-        <section class="panel">
-          <h2>✅ 나중에 확정할 것</h2>
-          <div class="panel-body checklist">
-            <label><input type="checkbox"> LA 첫 숙소 위치</label>
-            <label><input type="checkbox"> 라스베가스 숙소 위치</label>
-            <label><input type="checkbox"> LA 마지막 숙소 위치</label>
-            <label><input type="checkbox"> 렌터카 픽업/반납 지점</label>
-            <label><input type="checkbox"> 유니버설 티켓</label>
-            <label><input type="checkbox"> 라스베가스 쇼</label>
-            <label><input type="checkbox"> 그랜드캐년 투어 여부</label>
-          </div>
-        </section>
-      </aside>
     </section>
+
+    <section id="mapsec">
+      <div class="section-title">
+        <h2>동적 지도</h2>
+        <span>일정 탭하면 변경</span>
+      </div>
+      <div class="map-card">
+        <iframe id="map" src="https://maps.google.com/maps?q=Los%20Angeles%20to%20Las%20Vegas&t=&z=7&ie=UTF8&iwloc=&output=embed" loading="lazy"></iframe>
+        <div class="map-info">
+          <b id="mapTitle">전체 여행 경로</b>
+          <p id="mapDesc">아래 일정 카드를 누르면 이 지도와 상단 사진이 해당 장소로 바뀐다.</p>
+          <div class="btns">
+            <a id="mapLink" class="btn primary" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=LAX&destination=LAX&waypoints=Santa+Monica+Pier%7CGriffith+Observatory%7CUniversal+Studios+Hollywood%7CLas+Vegas+Strip%7CSphere+Las+Vegas%7CCitadel+Outlets%7CVenice+Beach">구글맵 열기</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="schedule">
+      <div class="section-title">
+        <h2>일정표</h2>
+        <span>모바일 카드형</span>
+      </div>
+      <div class="filters">
+        <button class="filter active" data-filter="all">전체</button>
+        <button class="filter" data-filter="la">LA</button>
+        <button class="filter" data-filter="vegas">Vegas</button>
+        <button class="filter" data-filter="must">필수</button>
+        <button class="filter" data-filter="move">이동</button>
+      </div>
+      <div class="day-list" id="dayList"></div>
+    </section>
+
+    <section id="check">
+      <div class="section-title">
+        <h2>예약 체크리스트</h2>
+        <span>브라우저 저장</span>
+      </div>
+      <div class="checklist" id="checklist"></div>
+      <p class="source-note">
+        스포츠 일정은 변동 가능성이 크다. 현재 확인 기준으로 Dodgers는 9/25~9/27 원정, Angels도 9/25~9/27 원정이며, NBA 프리시즌 LA 홈 일정은 아직 확정 전이다.
+      </p>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <div class="bottom-inner">
+      <a class="nav-btn" href="#home"><span>🏠</span>홈</a>
+      <a class="nav-btn" href="#must"><span>⭐</span>필수</a>
+      <a class="nav-btn" href="#mapsec"><span>🗺️</span>지도</a>
+      <a class="nav-btn" href="#schedule"><span>📅</span>일정</a>
+    </div>
+  </nav>
+
+  <div class="modal" id="modal">
+    <div class="sheet">
+      <div class="sheet-img" id="sheetImg">
+        <button class="close" onclick="closeSheet()">×</button>
+        <div class="sheet-title">
+          <h2 id="sheetTitle"></h2>
+          <p id="sheetDesc"></p>
+        </div>
+      </div>
+      <div class="sheet-body">
+        <div class="timeline" id="sheetTimeline"></div>
+        <div class="tip" id="sheetTip"></div>
+        <div class="btns">
+          <a id="sheetMap" class="btn primary" target="_blank">구글맵 경로</a>
+          <a id="sheetSearch" class="btn blue" target="_blank">주변 검색</a>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <script>
-    const buttons = document.querySelectorAll('button[data-filter]');
-    const days = document.querySelectorAll('.day');
+<script>
+const DATA = [
+  {
+    day:1, date:"9/25", week:"금", type:"la", city:"LA", title:"LA 도착 · 산타모니카 적응",
+    desc:"첫날은 시차 적응. 해변 산책과 가벼운 저녁만.",
+    img:"https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1000&q=85",
+    q:"Santa Monica Pier", map:"https://www.google.com/maps/dir/?api=1&destination=Santa+Monica+Pier",
+    search:"https://www.google.com/maps/search/restaurants+near+Santa+Monica+Pier",
+    tip:"첫날은 컨디션 관리가 핵심. 야간 장거리 운전은 비추천.",
+    schedule:[["도착 후","LAX → 체크인","짐 정리 후 휴식"],["저녁","Santa Monica Pier","가벼운 산책과 식사"],["밤","시차 적응","일찍 쉬기"]]
+  },
+  {
+    day:2, date:"9/26", week:"토", type:"la", city:"LA", title:"할리우드 · 베벌리힐즈 · 그리피스",
+    desc:"LA 대표 관광 압축. 저녁은 그리피스 야경.",
+    img:"https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=1000&q=85",
+    q:"Griffith Observatory", map:"https://www.google.com/maps/dir/?api=1&origin=Hollywood+Walk+of+Fame&destination=Griffith+Observatory&waypoints=Rodeo+Drive",
+    search:"https://www.google.com/maps/search/cafes+near+Rodeo+Drive",
+    tip:"주말 그리피스는 혼잡하므로 일몰 1시간 전 도착 추천.",
+    schedule:[["오전","Hollywood Walk of Fame","사진 위주로 짧게"],["오후","Beverly Hills / Rodeo Drive","거리 구경"],["저녁","Griffith Observatory","야경"]]
+  },
+  {
+    day:3, date:"9/27", week:"일", type:"la", city:"LA", title:"Universal Studios Hollywood",
+    desc:"미국식 체험형 관광 핵심. 하루 통째로 배정.",
+    img:"https://images.unsplash.com/photo-1569135219920-00898b584df4?auto=format&fit=crop&w=1000&q=85",
+    q:"Universal Studios Hollywood", map:"https://www.google.com/maps/dir/?api=1&destination=Universal+Studios+Hollywood",
+    search:"https://www.google.com/maps/search/Universal+CityWalk+Hollywood+restaurants",
+    tip:"운영시간은 날짜별로 다르므로 공식 캘린더 확인 후 티켓 예약.",
+    schedule:[["오전","오픈런","인기 어트랙션 우선"],["오후","스튜디오 투어 / 해리포터 존","대기시간 보며 이동"],["저녁","CityWalk","식사 후 복귀"]]
+  },
+  {
+    day:4, date:"9/28", week:"월", type:"vegas move", city:"Vegas", title:"LA → Las Vegas 이동",
+    desc:"오전 출발, 오후 체크인, 밤에는 스트립 야경.",
+    img:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
+    q:"Los Angeles to Las Vegas Strip", map:"https://www.google.com/maps/dir/?api=1&origin=Los+Angeles,+CA&destination=Las+Vegas+Strip",
+    search:"https://www.google.com/maps/search/Las+Vegas+Strip+restaurants",
+    tip:"이동일에는 욕심내지 말고 스트립 야경만 가볍게.",
+    schedule:[["오전","LA 출발","4~5시간 운전 예상"],["오후","Las Vegas 체크인","휴식"],["저녁","Strip / Bellagio Fountains","첫날 야경"]]
+  },
+  {
+    day:5, date:"9/29", week:"화", type:"vegas must", city:"Vegas", title:"Sphere 필수 · The Wizard of Oz",
+    desc:"이번 여행의 베가스 핵심 체험. 17:00 공연 기준으로 일정 고정.",
+    img:"https://images.unsplash.com/photo-1695668768015-418077d78d3e?auto=format&fit=crop&w=1000&q=85",
+    q:"Sphere Las Vegas", map:"https://www.google.com/maps/dir/?api=1&destination=Sphere+Las+Vegas",
+    search:"https://www.google.com/maps/search/restaurants+near+Sphere+Las+Vegas",
+    tip:"Ticketmaster 안내상 공연 시간 시작 후 늦은 입장이 불가하다. 문은 공연 45분 전 오픈 안내.",
+    schedule:[["오전","늦잠 / 브런치","전날 이동 피로 회복"],["오후","Bellagio · Venetian","가벼운 호텔 투어"],["17:00","Sphere · The Wizard of Oz","필수 예약 일정"],["저녁","가벼운 식사 / 스트립","공연 후 여유"]]
+  },
+  {
+    day:6, date:"9/30", week:"수", type:"vegas", city:"Vegas", title:"그랜드캐년 or 베가스 여유일",
+    desc:"체력에 따라 선택. 강행하면 그랜드캐년, 쉬려면 쇼핑·수영장.",
+    img:"https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=1000&q=85",
+    q:"Grand Canyon West", map:"https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Grand+Canyon+West",
+    search:"https://www.google.com/maps/search/Las+Vegas+North+Premium+Outlets",
+    tip:"그랜드캐년은 이동 시간이 길다. 전날 과음 금지.",
+    schedule:[["옵션 A","Grand Canyon 투어","사전 예약 권장"],["옵션 B","수영장 · 쇼핑 · 카지노","휴식형 일정"],["밤","마지막 베가스 야경","High Roller / Sphere 외관"]]
+  },
+  {
+    day:7, date:"10/1", week:"목", type:"la move", city:"LA", title:"Las Vegas → LA 복귀",
+    desc:"복귀 이동일. 저녁은 가볍게.",
+    img:"https://images.unsplash.com/photo-1534190760961-74e8c1c5c3da?auto=format&fit=crop&w=1000&q=85",
+    q:"Las Vegas to Los Angeles", map:"https://www.google.com/maps/dir/?api=1&origin=Las+Vegas+Strip&destination=Los+Angeles,+CA",
+    search:"https://www.google.com/maps/search/Koreatown+Los+Angeles+restaurants",
+    tip:"복귀일은 피로가 크므로 일정 최소화.",
+    schedule:[["오전","Vegas 체크아웃","점심 전 출발"],["오후","LA 도착","짐 정리"],["저녁","가벼운 식사","한인타운 후보"]]
+  },
+  {
+    day:8, date:"10/2", week:"금", type:"la", city:"LA", title:"Citadel Outlets 쇼핑",
+    desc:"후반부 첫 풀데이. 쇼핑 중심.",
+    img:"https://images.unsplash.com/photo-1605902711622-cfb43c4437d1?auto=format&fit=crop&w=1000&q=85",
+    q:"Citadel Outlets", map:"https://www.google.com/maps/dir/?api=1&destination=Citadel+Outlets",
+    search:"https://www.google.com/maps/search/restaurants+near+Citadel+Outlets",
+    tip:"영업시간 확인 후 방문. 렌터카 있을 때 가기 좋음.",
+    schedule:[["오전","느긋한 출발","전날 이동 피로 고려"],["오후","Citadel Outlets","쇼핑과 식사"],["저녁","숙소 복귀","구매품 정리"]]
+  },
+  {
+    day:9, date:"10/3", week:"토", type:"la must", city:"LA", title:"스포츠 슬롯 · NBA/MLB 대기",
+    desc:"NBA 프리시즌 또는 MLB 포스트시즌 가능성 확인용으로 저녁을 비워둠.",
+    img:"https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=1000&q=85",
+    q:"Crypto.com Arena Los Angeles", map:"https://www.google.com/maps/dir/?api=1&destination=Crypto.com+Arena+Los+Angeles",
+    search:"https://www.google.com/maps/search/Dodger+Stadium+or+Crypto.com+Arena",
+    tip:"현재 확정 가능한 LA 홈 MLB/NBA 일정은 없다. 여행 가까워지면 Lakers/Clippers 프리시즌 또는 Dodgers 포스트시즌 여부 확인.",
+    schedule:[["오전","Venice Canals / Beach","산책"],["오후","Abbot Kinney / Santa Monica","카페와 쇼핑"],["저녁","스포츠 슬롯","NBA/MLB 일정 뜨면 교체"]]
+  },
+  {
+    day:10, date:"10/4~10/5", week:"일", type:"la move", city:"LA", title:"마무리 · LAX 이동",
+    desc:"마지막 날은 공항 이동 리스크 관리.",
+    img:"https://images.unsplash.com/photo-1583404314681-407e4f3757f6?auto=format&fit=crop&w=1000&q=85",
+    q:"LAX Airport", map:"https://www.google.com/maps/dir/?api=1&destination=LAX",
+    search:"https://www.google.com/maps/search/LAX+car+rental+return",
+    tip:"국제선은 렌터카 반납과 공항 이동을 넉넉하게.",
+    schedule:[["오전","체크아웃 / 짐 정리","쇼핑 물품 무게 확인"],["출국 전","렌터카 반납 → LAX","여유 도착"]]
+  }
+];
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const filter = btn.dataset.filter;
+const checks = [
+  "Sphere 9/29 17:00 티켓 확인",
+  "유니버설 운영시간 및 티켓 확인",
+  "NBA Lakers/Clippers 프리시즌 일정 업데이트 확인",
+  "MLB Dodgers 포스트시즌 또는 LA 홈 경기 여부 확인",
+  "그랜드캐년 투어 여부 결정",
+  "렌터카 예약 및 보험 확인",
+  "ESTA / 여권 만료일 확인",
+  "숙소 3구간 예약"
+];
 
-        days.forEach(day => {
-          const category = day.dataset.category || '';
-          day.style.display = (filter === 'all' || category.includes(filter)) ? '' : 'none';
-        });
+function embed(q,z=12){return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&t=&z=${z}&ie=UTF8&iwloc=&output=embed`}
 
-        const mapQuery = {
-          all: 'Los Angeles to Las Vegas',
-          la: 'Los Angeles attractions Santa Monica Griffith Observatory Universal Studios Hollywood',
-          vegas: 'Las Vegas Strip Bellagio Venetian',
-          move: 'Los Angeles to Las Vegas driving route'
-        }[filter];
+function render(filter="all"){
+  const list=document.getElementById("dayList");
+  list.innerHTML="";
+  DATA.filter(d=>filter==="all" || d.type.includes(filter)).forEach(d=>{
+    const el=document.createElement("article");
+    el.className="day";
+    el.innerHTML=`
+      <div class="day-img" style="background-image:url('${d.img}')">
+        <div class="day-no">${String(d.day).padStart(2,"0")}</div>
+        <div class="badge-row">
+          <span class="badge">${d.date}</span>
+          <span class="badge">${d.city}</span>
+          ${d.type.includes("must")?'<span class="badge">필수</span>':""}
+        </div>
+      </div>
+      <div class="day-body">
+        <h3>${d.title}</h3>
+        <p class="day-desc">${d.desc}</p>
+        ${d.type.includes("must")?'<div class="sports-alert"><b>필수 확인</b><p>예약/일정 확정이 필요한 핵심 일정이다.</p></div>':""}
+        <div class="timeline">
+          ${d.schedule.map(s=>`<div class="slot"><div class="slot-time">${s[0]}</div><div><strong>${s[1]}</strong><span>${s[2]}</span></div></div>`).join("")}
+        </div>
+        <div class="btns">
+          <a class="btn primary" href="${d.map}" target="_blank" onclick="event.stopPropagation()">지도 경로</a>
+          <button class="btn" onclick="event.stopPropagation(); openSheet(${d.day})">상세</button>
+        </div>
+      </div>`;
+    el.addEventListener("click",()=>selectDay(d.day));
+    list.appendChild(el);
+  });
+}
 
-        document.getElementById('map').src =
-          'https://maps.google.com/maps?q=' + encodeURIComponent(mapQuery) + '&t=&z=8&ie=UTF8&iwloc=&output=embed';
-      });
-    });
+function selectDay(day){
+  const d=DATA.find(x=>x.day===day);
+  document.getElementById("map").src=embed(d.q,d.type.includes("move")?8:13);
+  document.getElementById("mapTitle").textContent=`DAY ${d.day} · ${d.title}`;
+  document.getElementById("mapDesc").textContent=d.desc;
+  document.getElementById("mapLink").href=d.map;
+  document.getElementById("heroImg").style.backgroundImage=`url('${d.img}')`;
+  document.getElementById("heroTitle").textContent=d.title;
+  document.getElementById("heroDesc").textContent=d.desc;
+  document.getElementById("mapsec").scrollIntoView({behavior:"smooth", block:"start"});
+}
 
-    days.forEach(day => {
-      day.addEventListener('mouseenter', () => {
-        const title = day.querySelector('h2').textContent;
-        document.getElementById('map').src =
-          'https://maps.google.com/maps?q=' + encodeURIComponent(title) + '&t=&z=11&ie=UTF8&iwloc=&output=embed';
-      });
-    });
-  </script>
+function openSheet(day){
+  const d=DATA.find(x=>x.day===day);
+  document.getElementById("sheetImg").style.backgroundImage=`url('${d.img}')`;
+  document.getElementById("sheetTitle").textContent=`DAY ${d.day} · ${d.title}`;
+  document.getElementById("sheetDesc").textContent=d.desc;
+  document.getElementById("sheetTimeline").innerHTML=d.schedule.map(s=>`<div class="slot"><div class="slot-time">${s[0]}</div><div><strong>${s[1]}</strong><span>${s[2]}</span></div></div>`).join("");
+  document.getElementById("sheetTip").textContent=d.tip;
+  document.getElementById("sheetMap").href=d.map;
+  document.getElementById("sheetSearch").href=d.search;
+  document.getElementById("modal").classList.add("open");
+  selectDay(day);
+}
+
+function closeSheet(){document.getElementById("modal").classList.remove("open")}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeSheet()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.filter);
+  });
+});
+
+function renderChecks(){
+  const el=document.getElementById("checklist");
+  el.innerHTML=checks.map((c,i)=>`<label class="check"><input type="checkbox" ${localStorage.getItem("mtrip"+i)==="1"?"checked":""} data-i="${i}"><span>${c}</span></label>`).join("");
+  el.querySelectorAll("input").forEach(input=>{
+    input.addEventListener("change",()=>localStorage.setItem("mtrip"+input.dataset.i,input.checked?"1":"0"));
+  });
+}
+
+render();
+renderChecks();
+</script>
 </body>
 </html>
