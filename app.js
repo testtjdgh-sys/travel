@@ -47,6 +47,7 @@ const flight = [
     status: "확정",
     desc: "인천(ICN) 9/23 12:40 출발 → 로스앤젤레스(LAX) 9/23 07:50 도착",
     meta: [["출발", "9/23 12:40 (ICN)"], ["도착", "9/23 07:50 (LAX)"], ["편명", "아시아나 OZ202"]],
+    pdf: "./Itinerary_Receipt.pdf",
   },
   {
     id: "flight-return",
@@ -55,6 +56,7 @@ const flight = [
     status: "확정",
     desc: "로스앤젤레스(LAX) 10/3 10:10 출발 → 인천(ICN) 10/4 15:20 도착",
     meta: [["출발", "10/3 10:10 (LAX)"], ["도착", "10/4 15:20 (ICN)"], ["편명", "아시아나 OZ201"]],
+    pdf: "./Itinerary_Receipt-2.pdf",
   },
 ];
 
@@ -522,6 +524,7 @@ function renderEntityList(containerId, items) {
       </div>
       <div class="status-line"><span class="status-dot ${filled ? "filled" : ""}"></span>${filled ? "입력됨" : item.status}</div>
       <div class="mini-actions">
+        ${item.pdf ? `<a class="small-btn primary-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer">PDF 열기</a>` : ""}
         <button class="small-btn" type="button" data-edit="${item.id}">${filled ? "수정" : "입력"}</button>
         ${filled ? `<button class="small-btn ghost-danger" type="button" data-reset="${item.id}">초기화</button>` : ""}
       </div>
