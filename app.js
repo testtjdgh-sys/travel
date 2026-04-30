@@ -19,7 +19,7 @@ const tripSections = [
       { label: "일정 상세", href: "#scheduleSection", kind: "link" },
       { label: "메모로", href: "#notes", kind: "link" },
     ],
-    hero: "https://images.unsplash.com/photo-1494783367193-149034c05e8f?auto=format&fit=crop&w=1200&q=85",
+    hero: "./assets/images/hero-route.jpg",
   },
   {
     title: "예약 우선순위",
@@ -35,7 +35,7 @@ const tripSections = [
       { label: "체크리스트", href: "#checklist", kind: "link" },
       { label: "모달 열기", action: "modal", kind: "button" },
     ],
-    hero: "https://images.unsplash.com/photo-1517400508447-f8dd518b86db?auto=format&fit=crop&w=1200&q=85",
+    hero: "./assets/images/hero-vegas.jpg",
   },
 ];
 
@@ -107,11 +107,15 @@ const checks = [
 const hero = {
   title: "LA · Vegas 일정표",
   desc: "요일별 일정을 먼저 보여주고, 항공·숙소·렌트카는 바로 참고할 수 있게 붙여 두었어요.",
-  image: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1400&q=85",
+  image: "./assets/images/hero-main.jpg",
 };
 
 let visibleSchedule = [];
 let activeDayIndex = 0;
+
+function fallbackImage(label = "Travel HQ") {
+  return `data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="#101423"/><circle cx="930" cy="170" r="160" fill="#1f2a48"/><circle cx="240" cy="590" r="270" fill="#18223d"/><text x="70" y="690" fill="#dce7ff" font-size="54" font-family="Arial">${label}</text></svg>`)}`;
+}
 
 function mapsSearchUrl(query) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
@@ -122,7 +126,7 @@ function mapsEmbedUrl(query) {
 }
 
 function isMapPlace(place) {
-  const genericWords = ["체크인", "체크아웃", "시차", "출발", "휴게", "식사", "늦잠", "오픈런", "숙소", "공항 이동"];
+  const genericWords = ["체크인", "체크아웃", "시차", "출발", "휴게", "식사", "늦잠", "오픈런", "숙소", "공항 이동", "미정"];
   return place && !place.includes("→") && !genericWords.some(word => place.includes(word));
 }
 
@@ -197,7 +201,7 @@ const scheduleData = [
   {
     day: 1, date: "9/23", week: "수", type: "la", city: "LA", title: "LA 도착 + 산타모니카",
     desc: "LAX 도착 후 숙소로 이동하고 산타모니카에서 가볍게 시차 적응.",
-    img: "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1000&q=85",
+    img: "./assets/images/day-01-santa-monica-pier.jpg",
     area: "LA 서쪽 해안 · 산타모니카",
     stayTime: "LA 임시 숙소 기준 30-50분",
     position: "west",
@@ -208,7 +212,7 @@ const scheduleData = [
   {
     day: 2, date: "9/24", week: "목", type: "la must", city: "LA", title: "다저스 경기",
     desc: "다저스 스타디움에서 LA 야구 직관을 중심으로 잡은 날.",
-    img: "https://images.unsplash.com/photo-1508344928928-7165b67de128?auto=format&fit=crop&w=1000&q=85",
+    img: "./assets/images/day-02-dodger-stadium.jpg",
     area: "LA 동북부 · Dodger Stadium",
     stayTime: "숙소에서 경기장 이동 (대중교통/우버)",
     position: "northeast",
@@ -219,7 +223,7 @@ const scheduleData = [
   {
     day: 3, date: "9/25", week: "금", type: "la must", city: "LA", title: "Universal Studios Hollywood",
     desc: "미국식 체험형 관광 핵심. 금요일 하루를 통째로 배정.",
-    img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=1000&q=85",
+    img: "./assets/images/day-03-universal-studios.jpg",
     area: "LA 북쪽 · Universal City",
     stayTime: "우버/지하철 이동",
     position: "north",
@@ -228,75 +232,75 @@ const scheduleData = [
     schedule: [["오전", "오픈런", "입장 직후 인기 어트랙션 우선"], ["점심", "파크 내부 식사", "대기시간 보며 가까운 곳 선택"], ["오후", "스튜디오 투어 / 해리포터 존", "앱 대기시간 기준으로 동선 조정"], ["저녁", "CityWalk", "식사 후 여유 있게 복귀"]],
   },
   {
-    day: 4, date: "9/26", week: "토", type: "la", city: "LA", title: "할리우드 · 베벌리힐즈 · 그리피스",
-    desc: "LA 대표 관광 압축. 렌터카 픽업 전 마지막 뚜벅이 일정.",
-    img: "https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=1000&q=85",
-    area: "LA 북부/중부 · Hollywood-Beverly-Griffith",
-    stayTime: "우버/리프트 활용",
+    day: 4, date: "9/26", week: "토", type: "la must", city: "LA", title: "Hollywood Park Farmers’ Market + Griffith + 재즈바",
+    desc: "오전에는 로컬 마켓, 오후에는 휴식 후 그리피스 천문대, 밤에는 재즈바 후보로 마무리.",
+    img: "./assets/images/day-04-farmers-market-griffith.jpg",
+    area: "Inglewood · Griffith Park · 재즈바 미정",
+    stayTime: "우버/리프트 이동 권장",
     position: "north",
-    mapQuery: "Griffith Observatory",
-    tip: "주말 그리피스는 우버 접근이 제한될 수 있으니 대쉬 버스(DASH) 등 대안도 확인해두세요.",
-    schedule: [["오전", "Hollywood Walk of Fame", "사진 포인트 위주로 짧게"], ["점심", "Beverly Hills", "이동 중 식사 후보 확인"], ["오후", "Rodeo Drive", "거리 구경, 카페 쉬는 시간"], ["저녁", "Griffith Observatory", "일몰 전 도착, 야경 보고 복귀"]],
+    mapQuery: "Hollywood Park Farmers Market Inglewood",
+    tip: "재즈바는 아직 미정. Vibrato 또는 Catalina 후보로 두고, 예약 가능 공연과 숙소 위치를 보고 최종 선택하세요.",
+    schedule: [["09:30", "숙소 출발", "우버/리프트 추천"], ["10:00~12:00", "Hollywood Park Farmers’ Market", "매주 토요일 10:00~14:00 운영. 로컬 농산물, 푸드, 장인 셀러 분위기"], ["12:00~13:00", "점심/커피", "마켓에서 해결하거나 근처 Inglewood 쪽"], ["13:00~14:30", "숙소 복귀 or 카페 휴식", "저녁 일정 대비 체력 보존"], ["15:00~18:30", "Griffith Observatory", "토·일 10:00~22:00 운영"], ["18:30~19:30", "저녁/이동", "재즈바 위치에 따라 우버 이동"], ["20:00~22:00", "재즈바 미정", "Vibrato or Catalina 추천"]],
   },
   {
-    day: 5, date: "9/27", week: "일", type: "vegas move", city: "Vegas", title: "렌터카 픽업 → 베가스 이동 + 벨라지오 분수",
-    desc: "렌터카를 픽업하고 LA에서 베가스로 이동. 밤에는 벨라지오 분수와 스트립 야경.",
-    img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1000&q=85",
+    day: 5, date: "9/27", week: "일", type: "vegas move", city: "Vegas", title: "렌터카 픽업 → Las Vegas 이동",
+    desc: "렌터카를 픽업하고 LA에서 베가스로 이동하는 장거리 이동일.",
+    img: "./assets/images/day-05-las-vegas-strip.jpg",
     area: "LA에서 북동쪽 · Mojave 경유",
     stayTime: "LA 출발 기준 4-5시간 운전",
     position: "northeast",
     mapQuery: "Los Angeles to Las Vegas",
     tip: "운전 거리가 기므로 픽업 시 차량 상태를 잘 확인하고 간식과 물을 미리 챙기세요.",
-    schedule: [["오전", "렌터카 픽업", "차량 수령, 보험/주유 조건 확인"], ["점심", "Barstow", "중간 휴게 및 식사"], ["오후", "Las Vegas 체크인", "호텔 주차장 진입 및 짐 정리"], ["저녁", "Bellagio Fountains", "분수쇼와 스트립 야경 가볍게 보기"]],
+    schedule: [["오전", "렌터카 픽업", "차량 수령, 보험/주유 조건 확인"], ["점심", "Barstow", "중간 휴게 및 식사"], ["오후", "Las Vegas 체크인", "호텔 주차장 진입 및 짐 정리"], ["저녁", "Las Vegas Strip", "컨디션이 괜찮으면 스트립 산책"]],
   },
   {
-    day: 6, date: "9/28", week: "월", type: "vegas must", city: "Vegas", title: "Sphere + 호텔투어 1차",
-    desc: "Sphere 관람을 중심으로 베네시안, 벨라지오 등 스트립 호텔 투어 1차.",
-    img: "https://images.unsplash.com/photo-1517400508447-f8dd518b86db?auto=format&fit=crop&w=1000&q=85",
+    day: 6, date: "9/28", week: "월", type: "vegas must", city: "Vegas", title: "Sphere + 호텔투어",
+    desc: "Sphere 관람을 중심으로 베네시안, 벨라지오 등 스트립 호텔 투어.",
+    img: "./assets/images/day-06-sphere-las-vegas.jpg",
     area: "Vegas Strip 동쪽 · Sphere",
     stayTime: "Vegas Strip 숙소 기준 10-25분",
     position: "vegasEast",
     mapQuery: "Sphere Las Vegas",
     tip: "Sphere는 입장과 이동 시간이 걸리므로 공연/예약 시간 45분 전 도착 기준으로 움직이세요.",
-    schedule: [["오전", "늦잠 / 브런치", "전날 이동 피로 회복"], ["오후", "Bellagio · Venetian", "호텔 투어 1차"], ["17:00", "Sphere Las Vegas", "핵심 예약 일정"], ["저녁", "The Venetian Las Vegas", "공연 후 스트립 산책 및 식사"]],
+    schedule: [["오전", "늦잠 / 브런치", "전날 이동 피로 회복"], ["오후", "Bellagio · Venetian", "대표 호텔 투어"], ["17:00", "Sphere Las Vegas", "핵심 예약 일정"], ["저녁", "The Venetian Las Vegas", "공연 후 스트립 산책 및 식사"]],
   },
   {
-    day: 7, date: "9/29", week: "화", type: "vegas must", city: "Vegas", title: "Omega Mart / AREA15 + 호텔투어 2차",
-    desc: "낮에는 AREA15와 Omega Mart, 이후 스트립 호텔 투어 2차.",
-    img: "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=1000&q=85",
+    day: 7, date: "9/29", week: "화", type: "vegas must", city: "Vegas", title: "Omega Mart / AREA15 + 호텔투어",
+    desc: "낮에는 AREA15와 Omega Mart, 이후 스트립 호텔 투어.",
+    img: "./assets/images/day-07-omega-mart-area15.jpg",
     area: "Vegas 서쪽 · AREA15 / Strip",
     stayTime: "Strip 숙소 기준 AREA15 차량 10-20분",
     position: "vegasWest",
     mapQuery: "AREA15 Las Vegas",
     tip: "Omega Mart는 시간대별 입장이 있을 수 있으니 예약 가능 시간을 먼저 확인하세요.",
-    schedule: [["오전", "느긋한 브런치", "전날 Sphere 일정 후 여유 있게 시작"], ["오후", "Omega Mart", "AREA15 메인 체험"], ["저녁", "AREA15 Las Vegas", "식사 또는 주변 구경"], ["밤", "Caesars Palace / Paris Las Vegas", "호텔투어 2차 및 야경"]],
+    schedule: [["오전", "느긋한 브런치", "전날 Sphere 일정 후 여유 있게 시작"], ["오후", "Omega Mart", "AREA15 메인 체험"], ["저녁", "AREA15 Las Vegas", "식사 또는 주변 구경"], ["밤", "Caesars Palace / Paris Las Vegas", "호텔투어 및 야경"]],
   },
   {
-    day: 8, date: "9/30", week: "수", type: "desert move", city: "Joshua Tree", title: "Vegas → Joshua Tree 이동 + 일몰/별보기",
-    desc: "베가스에서 조슈아트리로 이동해 사막 일몰과 별보기를 중심으로 보내는 날.",
-    img: "https://images.unsplash.com/photo-1541334654904-4df8d348911b?auto=format&fit=crop&w=1000&q=85",
+    day: 8, date: "9/30", week: "수", type: "desert move", city: "Joshua Tree", title: "Vegas → Joshua Tree + 별보기/숙박",
+    desc: "베가스에서 조슈아트리로 이동해 사막 일몰, 별보기, 숙박까지 이어지는 날.",
+    img: "./assets/images/day-08-joshua-tree.jpg",
     area: "Vegas → Joshua Tree National Park",
     stayTime: "Vegas 기준 약 3.5-4시간 운전",
     position: "desert",
     mapQuery: "Joshua Tree National Park",
-    tip: "공원 내부는 어둡고 통신이 약할 수 있으니 오프라인 지도, 물, 겉옷, 헤드랜턴을 준비하세요.",
-    schedule: [["오전", "Las Vegas 출발", "체크아웃 후 조슈아트리 방향 이동"], ["오후", "Joshua Tree National Park", "Hidden Valley, Skull Rock 등 핵심 포인트"], ["해질녘", "Keys View", "일몰 감상"], ["밤", "Joshua Tree 별보기", "숙소 또는 공원 근처에서 별보기"]],
+    tip: "별보기 후 바로 장거리 운전하지 않도록 조슈아트리 인근 숙박 기준으로 잡는 것이 안전합니다.",
+    schedule: [["오전", "Las Vegas 출발", "체크아웃 후 조슈아트리 방향 이동"], ["오후", "Joshua Tree National Park", "Hidden Valley, Skull Rock 등 핵심 포인트"], ["해질녘", "Keys View", "일몰 감상"], ["밤", "Joshua Tree 숙박", "별보기 후 인근 숙소에서 휴식"]],
   },
   {
-    day: 9, date: "10/1", week: "목", type: "la move", city: "LA", title: "Joshua Tree → LA 복귀 + Petersen 또는 Academy Museum",
-    desc: "조슈아트리에서 LA로 복귀한 뒤 컨디션에 따라 Petersen 또는 Academy Museum 선택.",
-    img: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1000&q=85",
-    area: "Joshua Tree → LA Miracle Mile",
+    day: 9, date: "10/1", week: "목", type: "la move", city: "LA", title: "Joshua Tree → LA 복귀 + 가벼운 쇼핑/한인타운",
+    desc: "조슈아트리에서 LA로 복귀한 뒤 무리하지 않고 쇼핑이나 한인타운 식사로 회복.",
+    img: "./assets/images/day-09-shopping-koreatown.jpg",
+    area: "Joshua Tree → LA / Koreatown",
     stayTime: "Joshua Tree 기준 LA까지 약 2.5-3시간",
     position: "east",
-    mapQuery: "Petersen Automotive Museum",
-    tip: "전날 밤 별보기 후 피로할 수 있으니 박물관은 하나만 선택하는 흐름이 좋습니다.",
-    schedule: [["오전", "Joshua Tree 체크아웃", "느긋하게 LA 복귀 출발"], ["점심", "LA 도착", "숙소 또는 Miracle Mile 근처 식사"], ["오후", "Petersen Automotive Museum", "자동차 박물관 선택지"], ["대안", "Academy Museum of Motion Pictures", "영화 박물관으로 대체 가능"]],
+    mapQuery: "Koreatown Los Angeles",
+    tip: "전날 별보기와 이동 피로가 있으니 쇼핑은 짧게, 저녁은 한인타운에서 편하게 잡는 흐름이 좋습니다.",
+    schedule: [["오전", "Joshua Tree 체크아웃", "느긋하게 LA 복귀 출발"], ["점심", "LA 도착", "숙소 체크인 또는 짐 정리"], ["오후", "The Grove", "가벼운 쇼핑 또는 카페"], ["저녁", "Koreatown Los Angeles", "한식 저녁과 휴식"]],
   },
   {
-    day: 10, date: "10/2", week: "금", type: "la must", city: "LA", title: "Getty Center + Malibu/PCH 드라이브 + 마지막 만찬",
+    day: 10, date: "10/2", week: "금", type: "la must", city: "LA", title: "Getty Center + Malibu/PCH + 마지막 만찬",
     desc: "Getty Center를 보고 Malibu/PCH 해안 드라이브 후 마지막 만찬으로 여행 마무리.",
-    img: "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1000&q=85",
+    img: "./assets/images/day-10-getty-center.jpg",
     area: "LA 서쪽 · Getty Center / Malibu / PCH",
     stayTime: "LA 숙소 기준 구간별 20-60분",
     position: "west",
@@ -307,7 +311,7 @@ const scheduleData = [
   {
     day: 11, date: "10/3", week: "토", type: "la move", city: "LA", title: "렌터카 반납 + 귀국",
     desc: "오전 10:10 비행기(OZ201) 탑승. LAX 근처에서 렌터카를 반납합니다.",
-    img: "https://images.unsplash.com/photo-1542051841857-5f90071e7989?auto=format&fit=crop&w=1000&q=85",
+    img: "./assets/images/day-11-lax-airport.jpg",
     area: "LA 서쪽 · LAX 공항권",
     stayTime: "LA 숙소에서 렌터카 반납소 이동",
     position: "airport",
@@ -395,9 +399,10 @@ function renderSchedule(filter = "all") {
 
 function createScheduleCard(item) {
   const card = el("article", "day-card");
+  const fallbackSrc = fallbackImage(item.title);
   card.innerHTML = `
     <div class="day-banner">
-      <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><circle cx=\"950\" cy=\"180\" r=\"160\" fill=\"#1f2a48\"/><circle cx=\"220\" cy=\"560\" r=\"260\" fill=\"#18223d\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">
+      <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSrc}'">
       <div class="day-overlay"></div>
       <div class="day-label">${String(item.day).padStart(2, "0")}</div>
       <div class="day-tags">
@@ -627,7 +632,7 @@ function openModal(index) {
   document.getElementById("detailModal").classList.add("open");
   document.getElementById("detailModal").setAttribute("aria-hidden", "false");
   document.getElementById("modalHero").classList.remove("is-empty");
-  document.getElementById("modalHero").innerHTML = `<img src="${item.hero}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width=\"1200\" height=\"800\" fill=\"#101423\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
+  document.getElementById("modalHero").innerHTML = `<img src="${item.hero}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImage(item.title)}'">`;
   document.getElementById("modalKicker").textContent = item.status;
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.desc;
@@ -645,7 +650,7 @@ function openScheduleModal(item) {
   document.getElementById("detailModal").classList.add("open");
   document.getElementById("detailModal").setAttribute("aria-hidden", "false");
   document.getElementById("modalHero").classList.remove("is-empty");
-  document.getElementById("modalHero").innerHTML = `<img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox=\"0 0 1200 800\"><rect width="1200" height="800" fill=\"#101423\"/><text x=\"70\" y=\"700\" fill=\"#dce7ff\" font-size=\"56\" font-family=\"Arial\">Travel HQ</text></svg>`)}'">`;
+  document.getElementById("modalHero").innerHTML = `<img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackImage(item.title)}'">`;
   document.getElementById("modalKicker").textContent = `${item.date} · ${item.week} · ${item.city}`;
   document.getElementById("modalTitle").textContent = item.title;
   document.getElementById("modalDesc").textContent = item.tip;
