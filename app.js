@@ -99,11 +99,13 @@ const car = [
 ];
 
 const checks = [
-  ["항공편 확정", "출발/도착 시간 기록"],
-  ["숙소 1차 확보", "LA / Vegas 숙소 분리"],
-  ["렌트카 견적 비교", "보험 포함 총액 확인"],
-  ["핵심 일정 재확인", "Sphere / Universal 우선"],
-  ["여권 / ESTA 확인", "만료일 체크"],
+  ["다저스 9/24 경기", "지금 예약 추천"],
+  ["Sphere 9/28 17:00", "지금 예약 추천"],
+  ["렌터카", "무료취소로 지금 선점"],
+  ["Vegas 숙소", "무료취소로 지금 선점"],
+  ["LA 숙소", "무료취소로 후보 선점"],
+  ["유니버설 9/25", "1~2개월 전 재확인 후 구매"],
+  ["조슈아트리 캠핑장", "6개월 전 오픈 알림 / 대안 숙소 찜"],
 ];
 
 const hero = {
@@ -150,7 +152,7 @@ function mapsDirectionsUrl(item) {
 
 function scheduleSummary(item) {
   return [
-    `DAY ${item.day} · ${item.date} ${item.week} · ${item.title}`,
+    `${item.date} ${item.week} · ${item.title}`,
     item.desc,
     `숙소 기준: ${item.stayTime}`,
     ...item.schedule.map(slot => `${slot[0]} - ${slot[1]}: ${slot[2]}`),
@@ -198,6 +200,12 @@ const locationLabels = {
   east: "LA 동쪽",
   airport: "공항권",
 };
+
+function cityTheme(item) {
+  if (item.type.includes("vegas") || item.city === "Vegas") return "city-vegas";
+  if (item.type.includes("la") || item.city === "LA") return "city-la";
+  return "city-desert";
+}
 
 const scheduleData = [
   {
@@ -400,17 +408,17 @@ function renderSchedule(filter = "all") {
 }
 
 function createScheduleCard(item) {
-  const card = el("article", "day-card");
+  const card = el("article", `day-card ${cityTheme(item)}`);
   const fallbackSrc = fallbackImage(item.title);
   card.innerHTML = `
     <div class="day-banner">
       <img src="${item.img}" alt="${item.title}" loading="lazy" onerror="this.onerror=null;this.src='${fallbackSrc}'">
       <div class="day-overlay"></div>
-      <div class="day-label">${String(item.day).padStart(2, "0")}</div>
+      <div class="day-label">${item.date}</div>
       <div class="day-tags">
         <span class="day-tag">${item.date}</span>
         <span class="day-tag">${item.week}</span>
-        <span class="day-tag">${item.city}</span>
+        <span class="day-tag city-badge">${item.city}</span>
         ${item.type.includes("must") ? '<span class="day-tag">필수</span>' : ""}
       </div>
     </div>
@@ -449,8 +457,8 @@ function renderDayRail() {
   const rail = document.getElementById("dayRail");
   if (!rail) return;
   rail.innerHTML = visibleSchedule.map((item, index) => `
-    <button class="day-pill ${index === activeDayIndex ? "active" : ""}" type="button" data-day-index="${index}">
-      <span>DAY ${item.day}</span>
+    <button class="day-pill ${cityTheme(item)} ${index === activeDayIndex ? "active" : ""}" type="button" data-day-index="${index}">
+      <span>${item.date}</span>
       <strong>${item.week}</strong>
     </button>
   `).join("");
@@ -494,7 +502,7 @@ function updateBriefing() {
   }
   const item = visibleSchedule[activeDayIndex];
   const nextPlace = item.schedule[0]?.[1] || item.title;
-  title.textContent = `DAY ${item.day} · ${item.title}`;
+  title.textContent = `${item.date} ${item.week} · ${item.title}`;
   desc.textContent = `${nextPlace}부터 시작 · ${item.stayTime}`;
   route.href = mapsDirectionsUrl(item);
 }
@@ -593,6 +601,7 @@ function renderChecks() {
     const row = el("label", "check-item");
     row.innerHTML = `
       <input type="checkbox" ${saved[i] ? "checked" : ""} data-index="${i}" />
+      <strong class="check-rank">${i + 1}</strong>
       <div>
         <span>${title}</span>
         <small>${desc}</small>
@@ -674,7 +683,7 @@ function updateDayStatus() {
     return;
   }
   const item = visibleSchedule[Math.min(activeDayIndex, visibleSchedule.length - 1)];
-  status.textContent = `DAY ${item.day} / ${scheduleData.length} · ${item.date} ${item.week}`;
+  status.textContent = `${item.date} ${item.week} · ${item.day}/${scheduleData.length}`;
 }
 
 function scrollToDay(index, animate = true) {
